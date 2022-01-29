@@ -14,6 +14,6 @@ public interface PartyMemberRepository {
     public List<Party> findPartiesByMemberUser(User user);
     public List<Party> findPartiesByUser(User user);
 
-    public List<User> findUserByParty(Party party);
+    public List<User> findUsersByParty(Party party);
 
 }

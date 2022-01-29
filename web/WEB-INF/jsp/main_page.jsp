@@ -7,7 +7,10 @@
 <body>
 main_page.jsp<br>
 hello ${user.name}!<br>
-
+<hr>
+<jsp:include page="/party-list.pknu" flush="false"></jsp:include>
+<hr>
+<a href="create-party.pknu">파티생성</a><br>
 <a href="logout.pknu">로그아웃</a>
 </body>
 </html>

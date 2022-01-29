@@ -79,16 +79,15 @@ public class LoginController {
     @RequestMapping("/login/authorization.pknu")
     public String authorization(@ModelAttribute User user, HttpSession session){
 
-
         User result = userService.loginAuthorization(user);
 
-        System.out.println("user.getName() = " + result.getName());
         //로그인 실패
         if(result==null){
             return "redirect:/login.pknu?result=loginFail";
         }
         //로그인 성공
         else{
+            System.out.println("user.getName() = " + result.getName());
             session.setAttribute("user",result);
             return "redirect:/main.pknu";
         }

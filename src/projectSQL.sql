@@ -7,7 +7,7 @@ create table users(
     modified_date timestamp(3) not null default now(3) on update now(3)
 );
 
-create table partys(
+create table parties(
     id varchar(40) primary key,
     name varchar(100) unique not null,
     leader_id varchar(40) not null,
@@ -31,3 +31,6 @@ create table party_members(
     foreign key(user_id) references users(id) on update cascade on delete cascade,
     primary key(party_id,user_id)
 );
+
+select * from party_members join parties p on party_members.party_id = p.id where party_members.grade=50 and user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5';
+select parties.id, parties.name, parties.leader_id, parties.created_date, parties.modified_date from parties join party_members pm on parties.id = pm.party_id where user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5' and pm.grade=50;

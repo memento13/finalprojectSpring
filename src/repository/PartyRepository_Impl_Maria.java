@@ -24,13 +24,16 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
     }
 
     @Override
-    public Integer addParty(Party party) {
+    public Party addParty(Party party) {
+        System.out.println("PartyRepository_Impl_Maria.addParty");
+        Party result = new Party();
         Integer uc = 0;
+        String uuid = UUID.randomUUID().toString();
 
         PreparedStatementSetter pss = new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement stmt) throws SQLException {
-                stmt.setString(1, UUID.randomUUID().toString());
+                stmt.setString(1, uuid);
                 stmt.setString(2, Hangul.hangul(party.getName()));
                 stmt.setString(3, Hangul.hangul(party.getLeaderId()));
             }
@@ -38,11 +41,17 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
         // id(uuid), name,leader_id, default,default
         try {
             uc = jdbcTemplate.update("INSERT INTO parties values (?,?,?,default,default)",pss);
+            if(uc==1){
+                result.setId(uuid);
+                result.setName(party.getName());
+                result.setLeaderId(party.getLeaderId());
+            }
         }catch (Exception e){
-            uc=0;
+            e.printStackTrace();
+            result = null;
         }
 
-        return uc;
+        return result;
     }
 
     @Override
