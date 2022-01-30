@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import repository.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PartyService {
@@ -52,7 +54,7 @@ public class PartyService {
      * @param user 파티장
      * @return 해당하는 User가 리더인 파티들이 담긴 리스트, 없는경우 빈 리스트를 반환함 null 아님!
      */
-    public List<Party> PartiesWhereIamLeader(User user){
+    public List<Party> partiesWhereIamLeader(User user){
         List<Party> partyList = new ArrayList<>();
          partyList= partyRepository.findByLeaderId(user);
          return partyList;
@@ -63,8 +65,27 @@ public class PartyService {
      * @param user 파티장
      * @return 해당하는 User가 멤버인 파티들이 담긴 리스트, 없는경우 빈 리스트를 반환함 null 아님!
      */
-    public List<Party> PartiesWhereIamMember(User user){
+    public List<Party> partiesWhereIamMember(User user){
         List<Party> partyList = partyMemberRepository.findPartiesByMemberUser(user);
         return partyList;
+    }
+
+    /**
+     * 해당하는 partyName이 같은 파티의 정보를 모아서 전달해주는 함수
+     * @param partyName 찾으려는 파티의 이름
+     * @return Map<String,Object>를 반환하기 때문에
+     *         객체가 Object로 업캐스팅하여 들어감
+     *         그래서 객체 사용시 다운캐스팅 하여 사용해야함
+     */
+    public Map<String,Object> partyInfo(String partyName){
+        Map<String, Object> resultMap = new HashMap<>();
+
+        Party party = partyRepository.findByName(partyName);
+        if(party != null){
+            resultMap.put("party",party);
+        }
+        //추후 넘겨야할 정보 추가시 넣을 공간
+
+        return resultMap;
     }
 }

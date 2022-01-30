@@ -2,11 +2,11 @@
 <%@taglib prefix="q" uri="http://java.sun.com/jsp/jstl/core" %>
 <div>
     <q:forEach items="${leaderList}" var="leaderParty">
-        ${leaderParty.name}<br>
+        <a href="party.pknu?party_name=${leaderParty.name}">${leaderParty.name}</a><br>
     </q:forEach>
 </div>
 <div>
     <q:forEach items="${memberList}" var="memberParty">
-        ${memberParty.name}<br>
+        <a href="party.pknu?party_name=${memberParty.name}">${memberParty.name}</a><br>
     </q:forEach>
 </div>

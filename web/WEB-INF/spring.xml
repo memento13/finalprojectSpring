@@ -58,8 +58,9 @@
     </bean>
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/*.pknu"/>
+            <mvc:mapping path="*.pknu"/>
             <mvc:exclude-mapping path="/log*.pknu"/>
+            <mvc:exclude-mapping path="/login/*.pknu"/>
             <mvc:exclude-mapping path="/dbcheck.pknu"/>
             <mvc:exclude-mapping path="/create-account.pknu"/>
             <mvc:exclude-mapping path="/create-account/create.pknu"/>

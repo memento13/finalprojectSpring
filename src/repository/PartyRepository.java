@@ -9,4 +9,5 @@ public interface PartyRepository {
 
     public Party addParty(Party party);
     public List<Party> findByLeaderId(User leader);
+    public Party findByName(String partyName);
 }

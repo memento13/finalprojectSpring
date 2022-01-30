@@ -79,4 +79,32 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
         return result;
     }
 
+    @Override
+    public Party findByName(String partyName) {
+        Party result = null;
+
+        List<Party> partyList = new ArrayList<>();
+        RowMapper<Party> rowMapper = new RowMapper<Party>() {
+            @Override
+            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
+                Party vo = new Party();
+                vo.setId(resultSet.getString("id"));
+                vo.setName(resultSet.getString("name"));
+                vo.setLeaderId(resultSet.getString("leader_id"));
+                vo.setCreateDate(resultSet.getString("created_date"));
+                vo.setModifiedDate(resultSet.getString("modified_date"));
+                return vo;
+            }
+        };
+        try {
+            partyList = jdbcTemplate.query("select * from parties where name= ?", rowMapper, partyName);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(partyList.size()==1){
+            result = partyList.get(0);
+        }
+
+        return result;
+    }
 }
