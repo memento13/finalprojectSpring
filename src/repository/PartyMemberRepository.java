@@ -15,5 +15,6 @@ public interface PartyMemberRepository {
     public List<Party> findPartiesByUser(User user);
 
     public List<User> findUsersByParty(Party party);
+    public Integer checkUserJoinedParty(Party party,User user);
 
 }

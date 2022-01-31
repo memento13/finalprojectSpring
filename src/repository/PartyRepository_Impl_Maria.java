@@ -107,4 +107,57 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
 
         return result;
     }
+
+    @Override
+    public List<Party> findDidNotJoinPartiesByUser(User user) {
+        List<Party> result = new ArrayList<>();
+        String sql = "select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id= ? ) user_joined on parties.id = user_joined.party_id where user_id is null";
+
+        RowMapper<Party> rowMapper = new RowMapper<Party>() {
+            @Override
+            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
+                Party vo = new Party();
+                vo.setId(resultSet.getString("id"));
+                vo.setName(resultSet.getString("name"));
+                vo.setLeaderId(resultSet.getString("leader_id"));
+                vo.setCreateDate(resultSet.getString("created_date"));
+                vo.setModifiedDate(resultSet.getString("modified_date"));
+                return vo;
+            }
+        };
+        try {
+            result = jdbcTemplate.query(sql, rowMapper, user.getId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<Party> findDidNotJoinPartiesByUserAndKeyword(User user, String keyword) {
+        List<Party> result = new ArrayList<>();
+        String sqlKeyword = "%"+keyword+"%";
+        String sql = "select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id= ? ) user_joined on parties.id = user_joined.party_id where user_id is null and name like ?";
+
+        RowMapper<Party> rowMapper = new RowMapper<Party>() {
+            @Override
+            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
+                Party vo = new Party();
+                vo.setId(resultSet.getString("id"));
+                vo.setName(resultSet.getString("name"));
+                vo.setLeaderId(resultSet.getString("leader_id"));
+                vo.setCreateDate(resultSet.getString("created_date"));
+                vo.setModifiedDate(resultSet.getString("modified_date"));
+                return vo;
+            }
+        };
+        try {
+            result = jdbcTemplate.query(sql, rowMapper, user.getId(),sqlKeyword);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 }

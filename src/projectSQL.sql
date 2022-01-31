@@ -34,3 +34,4 @@ create table party_members(
 
 select * from party_members join parties p on party_members.party_id = p.id where party_members.grade=50 and user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5';
 select parties.id, parties.name, parties.leader_id, parties.created_date, parties.modified_date from parties join party_members pm on parties.id = pm.party_id where user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5' and pm.grade=50;
+select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id='6d072069-8715-4249-895e-43ba42eb7fad') user_joined on parties.id = user_joined.party_id where user_id is null;

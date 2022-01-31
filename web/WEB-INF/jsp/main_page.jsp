@@ -11,6 +11,8 @@ hello ${user.name}!<br>
 <jsp:include page="/party-list.pknu" flush="false"></jsp:include>
 <hr>
 <a href="create-party.pknu">파티생성</a><br>
+<a href="party-search.pknu">파티검색</a><br>
+<hr>
 <a href="logout.pknu">로그아웃</a>
 </body>
 </html>

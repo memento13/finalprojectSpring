@@ -117,6 +117,16 @@ public class PartyMemberRepository_Impl_Maria implements PartyMemberRepository {
     }
 
     @Override
+    public Integer checkUserJoinedParty(Party party, User user) {
+        Integer result = 0;
+
+        String sql = "select count(*) from party_members where party_id = ? and user_id = ?";
+        result = jdbcTemplate.queryForObject(sql, Integer.class,party.getId(),user.getId());
+
+        return result;
+    }
+
+    @Override
     public List<Party> findPartiesByUser(User user) {
         return null;
     }

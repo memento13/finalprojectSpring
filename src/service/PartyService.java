@@ -88,4 +88,42 @@ public class PartyService {
 
         return resultMap;
     }
+
+    /**
+     * 해당 유저가 참가거나 설립하지 않은 파티들을 List<Party>에 담아서 전달해주는 함수
+     * @param user 참가하지 않은 파티를 찾으려는 user의 user객체
+     * @param keyword 검색할 키워드, 없으면 알아서 참가하지 않은 모든 파티를 반환
+     * @return List<Party> 없는 경우 null이 아닌 빈 리스트를 반환함
+     */
+    public List<Party> partyListDidNotJoin(User user,String keyword){
+        List<Party> partyList = new ArrayList<>();
+        if(keyword==null ||keyword.equals("")){
+             partyList = partyRepository.findDidNotJoinPartiesByUser(user);
+        }
+        else{
+            partyList = partyRepository.findDidNotJoinPartiesByUserAndKeyword(user,keyword);
+        }
+        return partyList;
+    }
+
+
+    /**
+     * 유저가 파티 참가시 실행되는 함수
+     * @param party 유저가 참가하려는 파티
+     * @param user 유저
+     * @return 파티 참가 성공시 true 실패시 false 반환
+     */
+    public boolean joinParty(Party party, User user){
+        boolean result = false;
+        //해당 파티에 가입 되어있는지 확인
+        Integer uc = partyMemberRepository.checkUserJoinedParty(party, user);
+        //파티에 가입
+        if(uc==0){
+            Integer inputUc = partyMemberRepository.addPartyMember(user, party);
+            if(inputUc==1){
+                result = true;
+            }
+        }
+        return result;
+    }
 }
