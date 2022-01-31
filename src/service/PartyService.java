@@ -126,4 +126,22 @@ public class PartyService {
         }
         return result;
     }
+
+
+    /**
+     * 유저가 해당파티의 파티장인지 true false 로 알려줌
+     * @param party 파티장인지 조사할 대상 파티
+     * @param user 파티장인지 조사할 유저
+     * @return 리더인 경유 true 아닌 경우 false 반환
+     */
+    public boolean isLeaderInParty(Party party,User user){
+        boolean result = false;
+        party = partyRepository.findById(party.getId());
+        if(party != null){
+            if(party.getLeaderId().equals(user.getId())){
+                result = true;
+            }
+        }
+        return result;
+    }
 }

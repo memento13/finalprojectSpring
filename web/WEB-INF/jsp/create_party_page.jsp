@@ -1,11 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="EUC-KR" %>
 <html>
 <head>
-    <title>íŒŒí‹°ìƒì„±íŽ˜ì´ì§€</title>
+    <title>ÆÄÆ¼»ý¼ºÆäÀÌÁö</title>
 </head>
 <body>
-<form method="post" action="creat-party/create.pknu">
-    íŒŒí‹°ì´ë¦„ : <input type="text" name="party_name">
+<form method="post" action="create-party/create.pknu">
+    ÆÄÆ¼ÀÌ¸§ : <input type="text" name="party_name">
     <input type="submit">
 </form>
 </body>

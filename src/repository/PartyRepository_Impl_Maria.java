@@ -18,9 +18,23 @@ import java.util.UUID;
 public class PartyRepository_Impl_Maria implements PartyRepository{
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Party> partyRowMapper;
 
     public PartyRepository_Impl_Maria(JdbcTemplate jdbcTemplate) {
+
         this.jdbcTemplate = jdbcTemplate;
+        this.partyRowMapper =  new RowMapper<Party>() {
+            @Override
+            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
+                Party vo = new Party();
+                vo.setId(resultSet.getString("id"));
+                vo.setName(resultSet.getString("name"));
+                vo.setLeaderId(resultSet.getString("leader_id"));
+                vo.setCreateDate(resultSet.getString("created_date"));
+                vo.setModifiedDate(resultSet.getString("modified_date"));
+                return vo;
+            }
+        };
     }
 
     @Override
@@ -58,20 +72,8 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
     public List<Party> findByLeaderId(User leader) {
         List<Party> result = new ArrayList<>();
 
-        RowMapper<Party> rowMapper = new RowMapper<Party>() {
-            @Override
-            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
-                Party vo = new Party();
-                vo.setId(resultSet.getString("id"));
-                vo.setName(resultSet.getString("name"));
-                vo.setLeaderId(resultSet.getString("leader_id"));
-                vo.setCreateDate(resultSet.getString("created_date"));
-                vo.setModifiedDate(resultSet.getString("modified_date"));
-                return vo;
-            }
-        };
         try {
-            result = jdbcTemplate.query("select * from parties where leader_id= ?", rowMapper, leader.getId());
+            result = jdbcTemplate.query("select * from parties where leader_id= ?", partyRowMapper, leader.getId());
         }catch (Exception e){
             //오류는 몰?루
         }
@@ -84,20 +86,9 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
         Party result = null;
 
         List<Party> partyList = new ArrayList<>();
-        RowMapper<Party> rowMapper = new RowMapper<Party>() {
-            @Override
-            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
-                Party vo = new Party();
-                vo.setId(resultSet.getString("id"));
-                vo.setName(resultSet.getString("name"));
-                vo.setLeaderId(resultSet.getString("leader_id"));
-                vo.setCreateDate(resultSet.getString("created_date"));
-                vo.setModifiedDate(resultSet.getString("modified_date"));
-                return vo;
-            }
-        };
+
         try {
-            partyList = jdbcTemplate.query("select * from parties where name= ?", rowMapper, partyName);
+            partyList = jdbcTemplate.query("select * from parties where name= ?", partyRowMapper, partyName);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -112,21 +103,8 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
     public List<Party> findDidNotJoinPartiesByUser(User user) {
         List<Party> result = new ArrayList<>();
         String sql = "select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id= ? ) user_joined on parties.id = user_joined.party_id where user_id is null";
-
-        RowMapper<Party> rowMapper = new RowMapper<Party>() {
-            @Override
-            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
-                Party vo = new Party();
-                vo.setId(resultSet.getString("id"));
-                vo.setName(resultSet.getString("name"));
-                vo.setLeaderId(resultSet.getString("leader_id"));
-                vo.setCreateDate(resultSet.getString("created_date"));
-                vo.setModifiedDate(resultSet.getString("modified_date"));
-                return vo;
-            }
-        };
         try {
-            result = jdbcTemplate.query(sql, rowMapper, user.getId());
+            result = jdbcTemplate.query(sql, partyRowMapper, user.getId());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -140,22 +118,25 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
         String sqlKeyword = "%"+keyword+"%";
         String sql = "select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id= ? ) user_joined on parties.id = user_joined.party_id where user_id is null and name like ?";
 
-        RowMapper<Party> rowMapper = new RowMapper<Party>() {
-            @Override
-            public Party mapRow(ResultSet resultSet, int i) throws SQLException {
-                Party vo = new Party();
-                vo.setId(resultSet.getString("id"));
-                vo.setName(resultSet.getString("name"));
-                vo.setLeaderId(resultSet.getString("leader_id"));
-                vo.setCreateDate(resultSet.getString("created_date"));
-                vo.setModifiedDate(resultSet.getString("modified_date"));
-                return vo;
-            }
-        };
         try {
-            result = jdbcTemplate.query(sql, rowMapper, user.getId(),sqlKeyword);
+            result = jdbcTemplate.query(sql, partyRowMapper, user.getId(),sqlKeyword);
         }catch (Exception e){
             e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Party findById(String partyId) {
+        Party result = null;
+        try {
+            List<Party> query = jdbcTemplate.query("select * from parties where id = ?", partyRowMapper, partyId);
+            if(query.size()==1){
+                result = query.get(0);
+            }
+        }catch (Exception e){
+            result = null;
         }
 
         return result;

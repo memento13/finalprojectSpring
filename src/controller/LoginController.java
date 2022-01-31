@@ -97,7 +97,6 @@ public class LoginController {
     @RequestMapping("/main.pknu")
     public ModelAndView main_page(HttpSession session){
         User user = (User) session.getAttribute("user");
-        System.out.println("user.getName() = " + user.getName());
         ModelAndView mnv = new ModelAndView();
         mnv.setViewName("main_page");
         mnv.addObject("user",user);

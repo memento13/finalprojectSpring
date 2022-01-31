@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -52,19 +51,32 @@
         <constructor-arg ref="partyRepository"/>
         <constructor-arg ref="partyMemberRepository"/>
     </bean>
-    <bean class="interceptor.AuthInterceptor" id="authInterceptor"></bean>
+<!--    <bean class="interceptor.AuthInterceptor" id="authInterceptor"></bean>-->
     <bean class="controller.PartyController" id="partyController">
         <constructor-arg ref="partyService"/>
     </bean>
+    <bean class="repository.ProjectRepository_Impl_Maria" id="projectRepository">
+        <constructor-arg ref="jtpl"/>
+    </bean>
+    <bean class="service.ProjectService" id="projectService">
+        <constructor-arg ref="partyRepository"/>
+        <constructor-arg ref="projectRepository"/>
+        <constructor-arg ref="userRepository"/>
+    </bean>
+    <bean class="controller.ProjectController" id="projectController">
+        <constructor-arg ref="projectService"/>
+        <constructor-arg ref="partyService"/>
+        <constructor-arg ref="partyRepository"/>
+    </bean>
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="*.pknu"/>
+            <mvc:mapping path="/**.pknu"/>
             <mvc:exclude-mapping path="/log*.pknu"/>
             <mvc:exclude-mapping path="/login/*.pknu"/>
             <mvc:exclude-mapping path="/dbcheck.pknu"/>
             <mvc:exclude-mapping path="/create-account.pknu"/>
             <mvc:exclude-mapping path="/create-account/create.pknu"/>
-            <bean class="interceptor.AuthInterceptor"/>
+            <bean class="interceptor.AuthInterceptor" id="authInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>

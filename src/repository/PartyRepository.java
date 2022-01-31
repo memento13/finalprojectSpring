@@ -13,6 +13,8 @@ public interface PartyRepository {
 
     public Party findByName(String partyName);
 
+    public Party findById(String partyId);
+
     public List<Party> findDidNotJoinPartiesByUser(User user);
 
     public List<Party> findDidNotJoinPartiesByUserAndKeyword(User user, String keyword);

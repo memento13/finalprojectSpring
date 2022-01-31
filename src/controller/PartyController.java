@@ -38,7 +38,7 @@ public class PartyController {
     }
 
 //    파티생성 로직
-    @RequestMapping("/creat-party/create.pknu")
+    @RequestMapping("/create-party/create.pknu")
     public String createParty(HttpSession session, @RequestParam("party_name") String partyName){
         User user = (User) session.getAttribute("user");
         Party party = new Party();
@@ -74,6 +74,7 @@ public class PartyController {
     public ModelAndView partyPage(@RequestParam("party_name") String partyName){
 
         //파티 가입했는지 확인해야함 !! 추가해야함!!
+        //jsp에도 리더인 경우만 생성 표시해야함!!
 
         ModelAndView mnv = new ModelAndView();
         Map<String, Object> partyInfo = partyService.partyInfo(partyName);
