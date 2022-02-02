@@ -2,17 +2,21 @@ package controller;
 
 import entity.Party;
 import entity.User;
+import entity.vo.ProjectAndMemberId;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import repository.Hangul;
 import repository.PartyRepository;
-import repository.PartyRepository_Impl_Maria;
 import service.PartyService;
 import service.ProjectService;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class ProjectController {
@@ -68,6 +72,44 @@ public class ProjectController {
             return url+"&msg=make_project_fail";
         }
     }
+
+    //유저가 해당파티의 프로젝트,프로젝트 가입여부들을 json으로 반환
+    @ResponseBody
+    @RequestMapping(value = "/project-list.pknu",produces = "application/text; charset=utf8")
+    public String projectList(@RequestParam("party_id") String partyId, HttpSession session){
+        System.out.println("ProjectController.projectList");
+        User user = (User) session.getAttribute("user");
+        // 유저가 파티에 가입되었는지 부터 체크해야할듯
+        //오류발생 위험 있음...try문으로 덮어야하나..
+        Party party = new Party();
+        party.setId(partyId);
+
+        JSONObject result = new JSONObject();
+        JSONArray data = new JSONArray();
+
+        List<ProjectAndMemberId> projectAndMemberIdList = projectService.userJoinedProjectList(party, user);
+
+        for (ProjectAndMemberId vo : projectAndMemberIdList) {
+            JSONObject projectAndJoined = new JSONObject();
+            projectAndJoined.put("project_id",vo.getProject().getId());
+            projectAndJoined.put("project_name",vo.getProject().getName());
+            boolean joined = false;
+            if(vo.getMemberId()!= null){
+                joined = true;
+            }
+            projectAndJoined.put("joined",joined);
+            data.put(projectAndJoined);
+        }
+        result.put("user_id",user.getId());
+        result.put("party_id",partyId);
+        result.put("data",data);
+        return result.toString();
+
+    }
+
+    //프로젝트 참가
+
+    //프로젝트 탈퇴
 
 
 

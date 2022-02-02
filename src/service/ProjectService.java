@@ -3,8 +3,14 @@ package service;
 import entity.Party;
 import entity.Project;
 import entity.User;
+import entity.vo.ProjectAndMemberId;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import repository.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -49,6 +55,18 @@ public class ProjectService {
             }
         }
 
+        return result;
+    }
+
+    /**
+     * 파티에 생성된 프로젝트와
+     * 해당 유저가 프로젝트의 참가 여부를 알려주는 리스트 반환
+     * @param party
+     * @param user
+     * @return 값이 없으면 null 이 아닌 빈 리스트가 반환됨
+     */
+    public List<ProjectAndMemberId> userJoinedProjectList(Party party, User user){
+        List<ProjectAndMemberId> result = projectRepository.findProjectAndMemberIdByPartyAndUser(party, user);
         return result;
     }
 }

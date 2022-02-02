@@ -2,6 +2,8 @@ package repository;
 
 import entity.Party;
 import entity.Project;
+import entity.User;
+import entity.vo.ProjectAndMemberId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -95,5 +97,33 @@ public class ProjectRepository_Impl_Maria implements ProjectRepository{
         return project;
     }
 
+    @Override
+    public List<ProjectAndMemberId> findProjectAndMemberIdByPartyAndUser(Party party, User user) {
+        List<ProjectAndMemberId> result = new ArrayList<>();
+        RowMapper<ProjectAndMemberId> rowMapper = new RowMapper<ProjectAndMemberId>() {
+            @Override
+            public ProjectAndMemberId mapRow(ResultSet resultSet, int i) throws SQLException {
+                ProjectAndMemberId vo = new ProjectAndMemberId();
+                Project project = new Project();
 
+                project.setId(resultSet.getString("projects_sub.id"));
+                project.setName(Hangul.hangul(resultSet.getString("projects_sub.name")));
+                project.setParty_id(resultSet.getString("projects_sub.party_id"));
+                project.setCreateDate(resultSet.getString("projects_sub.created_date"));
+                project.setModifiedDate(resultSet.getString("projects_sub.modified_date"));
+
+                vo.setProject(project);
+                vo.setMemberId(resultSet.getString("project_members_sub.user_id"));
+                return vo;
+            }
+        };
+        String sql = "select projects_sub.id, projects_sub.name, projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;";
+        try{
+            result = jdbcTemplate.query(sql, rowMapper, party.getId(), party.getId(), user.getId());
+        }catch (Exception e){
+            e.printStackTrace();
+            result = new ArrayList<>();
+        }
+        return result;
+    }
 }

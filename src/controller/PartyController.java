@@ -71,10 +71,13 @@ public class PartyController {
 
     // 파티의 메인페이지
     @RequestMapping("/party.pknu")
-    public ModelAndView partyPage(@RequestParam("party_name") String partyName){
+    public ModelAndView partyPage(@RequestParam("party_name") String partyName,HttpSession session){
 
+        User user = (User) session.getAttribute("user");
         //파티 가입했는지 확인해야함 !! 추가해야함!!
         //jsp에도 리더인 경우만 생성 표시해야함!!
+
+        //프로젝트도 표시...? 아니면 ajax로 페이지에서 표시할까?
 
         ModelAndView mnv = new ModelAndView();
         Map<String, Object> partyInfo = partyService.partyInfo(partyName);
@@ -82,6 +85,11 @@ public class PartyController {
             Object obj = partyInfo.get(key);
             if(obj instanceof Party){
                 mnv.addObject(key,(Party)obj);
+                boolean isPartyLeader = false;
+                if(user.getId().equals(((Party)obj).getId())){
+                    isPartyLeader = true;
+                }
+                mnv.addObject("isPartyLeader", isPartyLeader);
             }
         }
 //        mnv.setViewName("/WEB-INF/jsp/party/party_page.jsp");
@@ -115,12 +123,13 @@ public class PartyController {
         for (Party party : partyList) {
             JSONObject partyJson = new JSONObject();
             partyJson.put("id",party.getId());
-            partyJson.put("name",party.getName());
+            partyJson.put("name",Hangul.hangul(party.getName()));
             data.put(partyJson);
         }
 
         result.put("data",data);
-        return Hangul.hangul(result.toString());
+//        return Hangul.hangul(result.toString());
+        return result.toString();
     }
 
     // 파티 참가 로직
