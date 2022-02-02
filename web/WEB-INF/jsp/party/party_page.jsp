@@ -22,8 +22,9 @@ ${party.modifiedDate}<br>
 </div>
 
 <script>
-    function joinProject() {
-        ajaxProjectList();
+    function joinProject(partyId,projectId) {
+        // alert(partyId +" : "+ projectId);
+        ajaxProjectList("project/join.pknu?party_id="+partyId+"&project_id="+projectId);
     }
     $(document).ready(function () {
         ajaxProjectList("project-list.pknu?party_id=${party.id}");
@@ -36,18 +37,24 @@ ${party.modifiedDate}<br>
                 if (xhr.status == 200) {
 
                     let rt = xhr.responseText;
-                    alert(rt);
+                    // alert(rt);
                     let jo = window.eval("(" + rt + ")");
                     $("#project_list").empty();
-
+                    let partyId = "${party.id}"
                     for (let vo of jo.data) {
                         $("#project_list").append(vo.project_name);
                         if (vo.joined) {
-                            $("#project_list").append($("<button>").text("참가중").attr("onclick",joinProject()));
+                            $("#project_list").append($("<button>").text("참가중"));
                         } else {
-                            $("#project_list").append($("<button>").text("미참가"));
+                            $("#project_list").append($("<button>").text("미참가").click(function () {
+                                joinProject(partyId,vo.project_id);
+                            }));
                         }
                         $("#project_list").append($("<br>"));
+                    }
+
+                    if(!jo.result){
+                        alert(jo.msg);
                     }
                 }
             }

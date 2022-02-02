@@ -23,6 +23,13 @@ public class Project {
         this.name = name;
     }
 
+    public Party getParty(){
+        return party_id;
+    }
+    public void setParty(Party party){
+        this.party_id = party;
+    }
+
     public String getParty_id() {
         return party_id.getId();
     }

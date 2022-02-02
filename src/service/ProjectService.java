@@ -2,14 +2,12 @@ package service;
 
 import entity.Party;
 import entity.Project;
+import entity.ProjectMember;
 import entity.User;
 import entity.vo.ProjectAndMemberId;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import repository.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,11 +15,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
-    public ProjectService(PartyRepository partyRepository, ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectService(PartyRepository partyRepository, ProjectRepository projectRepository, UserRepository userRepository, ProjectMemberRepository projectMemberRepository) {
         this.partyRepository = partyRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.projectMemberRepository = projectMemberRepository;
+
     }
 
 
@@ -67,6 +68,27 @@ public class ProjectService {
      */
     public List<ProjectAndMemberId> userJoinedProjectList(Party party, User user){
         List<ProjectAndMemberId> result = projectRepository.findProjectAndMemberIdByPartyAndUser(party, user);
+        return result;
+    }
+
+    /**
+     * 유저를 프로젝트에 추가하는 함수
+     * @param project 프로젝트
+     * @param user 유저
+     * @return 성공시 true , 실패시 false 반환
+     */
+    public boolean joinProject(Project project,User user){
+        boolean result = false;
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setPartyId(project.getParty_id());
+        projectMember.setProjectId(project.getId());
+        projectMember.setUserId(user.getId());
+        projectMember = projectMemberRepository.addProjectMember(projectMember);
+
+        if(projectMember!= null){
+            result = true;
+        }
+
         return result;
     }
 }

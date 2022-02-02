@@ -1,6 +1,7 @@
 package controller;
 
 import entity.Party;
+import entity.Project;
 import entity.User;
 import entity.vo.ProjectAndMemberId;
 import org.json.JSONArray;
@@ -102,16 +103,52 @@ public class ProjectController {
         }
         result.put("user_id",user.getId());
         result.put("party_id",partyId);
+        result.put("result",true);
         result.put("data",data);
         return result.toString();
 
     }
 
-    //프로젝트 참가
+    //프로젝트 참가 후 프로젝트,프로젝트 가입 여부를 json으로 반환
+    @ResponseBody
+    @RequestMapping(value = "/project/join.pknu", produces = "application/text; charset=utf8")
+    public String projectJoin(@RequestParam("party_id") String partyId,@RequestParam("project_id") String projectId,HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        Project project = new Project();
+        project.setId(projectId);
+        project.setParty_id(partyId);
+
+        boolean addResult = projectService.joinProject(project, user);
+
+        JSONObject result = new JSONObject();
+        JSONArray data = new JSONArray();
+
+        List<ProjectAndMemberId> projectAndMemberIdList = projectService.userJoinedProjectList(project.getParty(), user);
+
+        for (ProjectAndMemberId vo : projectAndMemberIdList) {
+            JSONObject projectAndJoined = new JSONObject();
+            projectAndJoined.put("project_id",vo.getProject().getId());
+            projectAndJoined.put("project_name",vo.getProject().getName());
+            boolean joined = false;
+            if(vo.getMemberId()!= null){
+                joined = true;
+            }
+            projectAndJoined.put("joined",joined);
+            data.put(projectAndJoined);
+        }
+
+        result.put("user_id",user.getId());
+        result.put("party_id",partyId);
+        result.put("result",addResult);
+        if(!addResult){
+            result.put("msg","프로젝트에 가입하지 못했습니다");
+        }
+        result.put("data",data);
+        return result.toString();
+    }
 
     //프로젝트 탈퇴
-
-
 
 
 }

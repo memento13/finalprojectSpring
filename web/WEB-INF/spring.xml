@@ -62,11 +62,15 @@
         <constructor-arg ref="partyRepository"/>
         <constructor-arg ref="projectRepository"/>
         <constructor-arg ref="userRepository"/>
+        <constructor-arg ref="projectMemberRepository"/>
     </bean>
     <bean class="controller.ProjectController" id="projectController">
         <constructor-arg ref="projectService"/>
         <constructor-arg ref="partyService"/>
         <constructor-arg ref="partyRepository"/>
+    </bean>
+    <bean class="repository.ProjectMemberRepository_Impl_Maria" id="projectMemberRepository">
+        <constructor-arg ref="jtpl"/>
     </bean>
     <mvc:interceptors>
         <mvc:interceptor>

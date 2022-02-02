@@ -59,3 +59,4 @@ select parties.id, parties.name, parties.leader_id, parties.created_date, partie
 select id,name,leader_id,parties.created_date,parties.modified_date from parties left join (select * from party_members where user_id='6d072069-8715-4249-895e-43ba42eb7fad') user_joined on parties.id = user_joined.party_id where user_id is null;
 
 select projects_sub.id, projects_sub.name, projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;
+
