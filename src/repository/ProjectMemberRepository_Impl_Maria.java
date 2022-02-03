@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository("projectMemberRepository")
 public class ProjectMemberRepository_Impl_Maria implements ProjectMemberRepository{
@@ -60,6 +61,21 @@ public class ProjectMemberRepository_Impl_Maria implements ProjectMemberReposito
             result = null;
         }
 
+        return result;
+    }
+
+    @Override
+    public ProjectMember findByProjectAndUser(Project project, User user) {
+        ProjectMember result = null;
+        String sql = "select * from project_members where project_id = ? and user_id = ?";
+        try {
+            List<ProjectMember> query = jdbcTemplate.query(sql, projectMemberRowMapper, project.getId(), user.getId());
+            if(query.size()==1){
+                result = query.get(0);
+            }
+        }catch (Exception e){
+            result = null;
+        }
         return result;
     }
 }

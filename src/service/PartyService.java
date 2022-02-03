@@ -73,16 +73,23 @@ public class PartyService {
     /**
      * 해당하는 partyName이 같은 파티의 정보를 모아서 전달해주는 함수
      * @param partyName 찾으려는 파티의 이름
+     * @param user 세션으로 전달받은 유저객체
      * @return Map<String,Object>를 반환하기 때문에
      *         객체가 Object로 업캐스팅하여 들어감
      *         그래서 객체 사용시 다운캐스팅 하여 사용해야함
      */
-    public Map<String,Object> partyInfo(String partyName){
+    public Map<String,Object> partyInfo(String partyName,User user){
         Map<String, Object> resultMap = new HashMap<>();
 
         Party party = partyRepository.findByName(partyName);
+        Boolean isPartyLeader = false;
         if(party != null){
             resultMap.put("party",party);
+            if(user.getId().equals(party.getLeaderId())){
+                isPartyLeader = true;
+            }
+            resultMap.put("isPartyLeader",isPartyLeader);
+
         }
         //추후 넘겨야할 정보 추가시 넣을 공간
 

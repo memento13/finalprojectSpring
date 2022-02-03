@@ -8,7 +8,9 @@ import entity.vo.ProjectAndMemberId;
 import org.springframework.stereotype.Service;
 import repository.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProjectService {
@@ -66,7 +68,7 @@ public class ProjectService {
      * @param user
      * @return 값이 없으면 null 이 아닌 빈 리스트가 반환됨
      */
-    public List<ProjectAndMemberId> userJoinedProjectList(Party party, User user){
+    public List<ProjectAndMemberId> checkUserJoinedProjectList(Party party, User user){
         List<ProjectAndMemberId> result = projectRepository.findProjectAndMemberIdByPartyAndUser(party, user);
         return result;
     }
@@ -90,5 +92,34 @@ public class ProjectService {
         }
 
         return result;
+    }
+
+    /**
+     * 유저가 해당 프로젝트에 가입중인지 검증하는 함수
+     * @param project 유저가 가입한건지 검증할 프로젝트
+     * @param user 검증할려는 유저
+     * @return 가입시 true, 미가입시 false 반환
+     */
+    public boolean checkUserJoinedProject(Project project,User user){
+        boolean result = false;
+        ProjectMember projectMember= projectMemberRepository.findByProjectAndUser(project, user);
+        if(projectMember != null){
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * project의 정보를 모아서 Map으로 전달하는 함수
+     * @param project id값만 있는 프로젝트
+     * @return 프로젝트페이지에 띄우기 위한 정보가 있는 모든 값
+     */
+    public Map<String,Object> projectInfo(Project project){
+        Map<String, Object> resultMap = new HashMap<>();
+        project = projectRepository.findById(project.getId());
+        if(project != null){
+            resultMap.put("project",project);
+        }
+        return resultMap;
     }
 }

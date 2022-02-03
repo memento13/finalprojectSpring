@@ -126,4 +126,19 @@ public class ProjectRepository_Impl_Maria implements ProjectRepository{
         }
         return result;
     }
+
+    @Override
+    public Project findById(String projectId) {
+        Project project = null;
+        String sql = "select * from projects where id = ?";
+        try {
+            List<Project> query = jdbcTemplate.query(sql, projectRowMapper, projectId);
+            if(query.size()==1){
+                project = query.get(0);
+            }
+        }catch (Exception e){
+            project = null;
+        }
+        return project;
+    }
 }

@@ -18,6 +18,7 @@ import service.ProjectService;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ProjectController {
@@ -88,7 +89,7 @@ public class ProjectController {
         JSONObject result = new JSONObject();
         JSONArray data = new JSONArray();
 
-        List<ProjectAndMemberId> projectAndMemberIdList = projectService.userJoinedProjectList(party, user);
+        List<ProjectAndMemberId> projectAndMemberIdList = projectService.checkUserJoinedProjectList(party, user);
 
         for (ProjectAndMemberId vo : projectAndMemberIdList) {
             JSONObject projectAndJoined = new JSONObject();
@@ -119,12 +120,14 @@ public class ProjectController {
         project.setId(projectId);
         project.setParty_id(partyId);
 
+        //프로젝트 참가로직
         boolean addResult = projectService.joinProject(project, user);
 
+        //json 반환
         JSONObject result = new JSONObject();
         JSONArray data = new JSONArray();
 
-        List<ProjectAndMemberId> projectAndMemberIdList = projectService.userJoinedProjectList(project.getParty(), user);
+        List<ProjectAndMemberId> projectAndMemberIdList = projectService.checkUserJoinedProjectList(project.getParty(), user);
 
         for (ProjectAndMemberId vo : projectAndMemberIdList) {
             JSONObject projectAndJoined = new JSONObject();
@@ -149,6 +152,38 @@ public class ProjectController {
     }
 
     //프로젝트 탈퇴
+
+    //프로젝트 페이지
+    @RequestMapping("/project.pknu")
+    public ModelAndView projectPage(@RequestParam("project_id") String project_id,HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        Project project = new Project();
+        project.setId(project_id);
+        ModelAndView mnv = new ModelAndView();
+
+
+        // 유저가 프로젝트 가입여부 검증
+        boolean joined = projectService.checkUserJoinedProject(project, user);
+        // 검증 통과시 페이지 연결, 아니면 메인페이지로 돌려보냄?
+        if(joined){
+            mnv.setViewName("project/project_page");
+
+            Map<String, Object> projectInfo = projectService.projectInfo(project);
+            for (String key :projectInfo.keySet()){
+                Object obj = projectInfo.get(key);
+                if(obj instanceof Project){
+                    mnv.addObject(key,(Project) obj);
+                }
+            }
+
+        }
+        else{
+            mnv.setViewName("redirect:/main.pknu?msg=incorrectConnection");
+        }
+
+        return mnv;
+    }
 
 
 }

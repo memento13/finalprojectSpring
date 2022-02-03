@@ -13,5 +13,6 @@ public interface ProjectRepository {
     public List<Project> findProjectsByParty(Party party);
     public Project findProjectByPartyAndName(Party party,String projectName);
     public List<ProjectAndMemberId> findProjectAndMemberIdByPartyAndUser(Party party, User user);
+    public Project findById(String projectId);
 
 }

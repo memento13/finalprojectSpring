@@ -42,10 +42,11 @@ ${party.modifiedDate}<br>
                     $("#project_list").empty();
                     let partyId = "${party.id}"
                     for (let vo of jo.data) {
-                        $("#project_list").append(vo.project_name);
                         if (vo.joined) {
+                            $("#project_list").append($("<a></a>").text(vo.project_name).attr("href","project.pknu?project_id="+vo.project_id));
                             $("#project_list").append($("<button>").text("참가중"));
                         } else {
+                            $("#project_list").append(vo.project_name);
                             $("#project_list").append($("<button>").text("미참가").click(function () {
                                 joinProject(partyId,vo.project_id);
                             }));
