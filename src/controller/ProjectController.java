@@ -1,6 +1,7 @@
 package controller;
 
 import entity.Party;
+import entity.Post;
 import entity.Project;
 import entity.User;
 import entity.vo.ProjectAndMemberId;
@@ -18,7 +19,9 @@ import service.ProjectService;
 
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -163,7 +166,7 @@ public class ProjectController {
 
     //프로젝트 페이지
     @RequestMapping("/project.pknu")
-    public ModelAndView projectPage(@RequestParam("project_id") String project_id,HttpSession session){
+    public ModelAndView projectPage(@RequestParam("project_id") String project_id,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         Project project = new Project();
@@ -178,10 +181,21 @@ public class ProjectController {
             mnv.setViewName("project/project_page");
 
             Map<String, Object> projectInfo = projectService.projectInfo(project);
+            List<Post> posts = new ArrayList<>();
             for (String key :projectInfo.keySet()){
                 Object obj = projectInfo.get(key);
                 if(obj instanceof Project){
                     mnv.addObject(key,(Project) obj);
+                }
+                if(key.equals("posts")){
+                    posts = (List<Post>) obj;
+                    for (Post post : posts) {
+                        System.out.println("post.getTitle() = " + URLDecoder.decode(post.getTitle(),"UTF-8"));
+                        System.out.println("post.getContent() = " + Hangul.hangul(post.getContent()));
+                        System.out.println("=======================================");
+                    }
+//                    posts = ((List) obj);
+                    mnv.addObject(key,posts);
                 }
             }
 
@@ -192,6 +206,5 @@ public class ProjectController {
 
         return mnv;
     }
-
 
 }

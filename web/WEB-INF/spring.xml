@@ -63,6 +63,7 @@
         <constructor-arg ref="projectRepository"/>
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="projectMemberRepository"/>
+        <constructor-arg ref="postService"/>
     </bean>
     <bean class="controller.ProjectController" id="projectController">
         <constructor-arg ref="projectService"/>
@@ -71,6 +72,16 @@
     </bean>
     <bean class="repository.ProjectMemberRepository_Impl_Maria" id="projectMemberRepository">
         <constructor-arg ref="jtpl"/>
+    </bean>
+    <bean class="repository.PostRepository_Impl_Maria" id="postRepository">
+        <constructor-arg ref="jtpl"/>
+    </bean>
+    <bean class="service.PostService" id="postService">
+        <constructor-arg ref="postRepository"/>
+    </bean>
+    <bean class="controller.PostController" id="postController">
+        <constructor-arg ref="postService"/>
+        <constructor-arg ref="projectService"/>
     </bean>
     <mvc:interceptors>
         <mvc:interceptor>

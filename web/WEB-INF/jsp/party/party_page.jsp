@@ -37,7 +37,7 @@ ${party.modifiedDate}<br>
                 if (xhr.status == 200) {
 
                     let rt = xhr.responseText;
-                    alert(rt);
+                    // alert(rt);
                     let jo = window.eval("(" + rt + ")");
                     $("#project_list").empty();
                     let partyId = "${party.id}"

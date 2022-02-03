@@ -67,6 +67,9 @@ create table posts(
     foreign key(project_id) references projects(id) on update cascade on delete cascade,
     foreign key(user_id) references users(id) on update cascade on delete cascade
 );
+
+select posts.id, posts.title, posts.content, posts.party_id, posts.project_id, posts.user_id, posts.created_date, posts.modified_date,users.name from posts left join users on posts.user_id = users.id where project_id=? order by created_date desc;
+insert into posts values (?,?,?,?,?,?,default ,default );
 --
 -- select * from party_members join parties p on party_members.party_id = p.id where party_members.grade=50 and user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5';
 -- select parties.id, parties.name, parties.leader_id, parties.created_date, parties.modified_date from parties join party_members pm on parties.id = pm.party_id where user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5' and pm.grade=50;

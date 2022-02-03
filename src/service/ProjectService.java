@@ -1,9 +1,6 @@
 package service;
 
-import entity.Party;
-import entity.Project;
-import entity.ProjectMember;
-import entity.User;
+import entity.*;
 import entity.vo.ProjectAndMemberId;
 import org.springframework.stereotype.Service;
 import repository.*;
@@ -18,12 +15,14 @@ public class ProjectService {
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final PostService postService;
 
-    public ProjectService(PartyRepository partyRepository, ProjectRepository projectRepository, UserRepository userRepository, ProjectMemberRepository projectMemberRepository) {
+    public ProjectService(PartyRepository partyRepository, ProjectRepository projectRepository, UserRepository userRepository, ProjectMemberRepository projectMemberRepository, PostService postService) {
         this.partyRepository = partyRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.projectMemberRepository = projectMemberRepository;
+        this.postService = postService;
 
     }
 
@@ -119,6 +118,10 @@ public class ProjectService {
         project = projectRepository.findById(project.getId());
         if(project != null){
             resultMap.put("project",project);
+        }
+        List<Post> posts = postService.projectPosts(project);
+        if(posts != null){
+            resultMap.put("posts",posts);
         }
         return resultMap;
     }
