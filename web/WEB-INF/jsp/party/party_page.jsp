@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@taglib prefix="q" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html>
@@ -37,16 +37,18 @@ ${party.modifiedDate}<br>
                 if (xhr.status == 200) {
 
                     let rt = xhr.responseText;
-                    // alert(rt);
+                    alert(rt);
                     let jo = window.eval("(" + rt + ")");
                     $("#project_list").empty();
                     let partyId = "${party.id}"
                     for (let vo of jo.data) {
                         if (vo.joined) {
-                            $("#project_list").append($("<a></a>").text(vo.project_name).attr("href","project.pknu?project_id="+vo.project_id));
+                            // $("#project_list").append($("<a></a>").text(encodeURIComponent(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
+                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
                             $("#project_list").append($("<button>").text("참가중"));
                         } else {
-                            $("#project_list").append(vo.project_name);
+                            // $("#project_list").append(encodeURIComponent(vo.project_name));
+                            $("#project_list").append(decodeURI(vo.project_name));
                             $("#project_list").append($("<button>").text("미참가").click(function () {
                                 joinProject(partyId,vo.project_id);
                             }));
@@ -61,6 +63,7 @@ ${party.modifiedDate}<br>
             }
         };
         xhr.open("get", ajaxUrl, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         xhr.send(null);
     }
 </script>

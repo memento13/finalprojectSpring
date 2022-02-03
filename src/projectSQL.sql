@@ -65,7 +65,7 @@ create table posts(
     modified_date timestamp(3) not null default now(3) on update now(3),
     foreign key(party_id) references parties(id) on update cascade on delete cascade,
     foreign key(project_id) references projects(id) on update cascade on delete cascade,
-    foreign key(user_id) references users(id) on update cascade on delete cascade,
+    foreign key(user_id) references users(id) on update cascade on delete cascade
 );
 --
 -- select * from party_members join parties p on party_members.party_id = p.id where party_members.grade=50 and user_id='5529b5d6-4946-42d9-9187-0d67bf1505b5';
@@ -75,3 +75,8 @@ create table posts(
 -- select projects_sub.id, projects_sub.name, projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;
 --
 -- select * from project_members where project_id = ? and user_id = ?;
+
+SELECT COLUMN_NAME, CHARACTER_SET_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'pukyung16'
+AND TABLE_NAME = 'projects';

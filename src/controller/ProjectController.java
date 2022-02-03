@@ -17,6 +17,8 @@ import service.PartyService;
 import service.ProjectService;
 
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +79,8 @@ public class ProjectController {
 
     //유저가 해당파티의 프로젝트,프로젝트 가입여부들을 json으로 반환
     @ResponseBody
-    @RequestMapping(value = "/project-list.pknu",produces = "application/text; charset=utf8")
-    public String projectList(@RequestParam("party_id") String partyId, HttpSession session){
+    @RequestMapping(value = "/project-list.pknu",produces = "application/json; charset=UTF-8")
+    public String projectList(@RequestParam("party_id") String partyId, HttpSession session) throws UnsupportedEncodingException {
         System.out.println("ProjectController.projectList");
         User user = (User) session.getAttribute("user");
         // 유저가 파티에 가입되었는지 부터 체크해야할듯
@@ -94,7 +96,8 @@ public class ProjectController {
         for (ProjectAndMemberId vo : projectAndMemberIdList) {
             JSONObject projectAndJoined = new JSONObject();
             projectAndJoined.put("project_id",vo.getProject().getId());
-            projectAndJoined.put("project_name",vo.getProject().getName());
+            projectAndJoined.put("project_name", URLEncoder.encode(vo.getProject().getName(),"UTF-8"));
+
             boolean joined = false;
             if(vo.getMemberId()!= null){
                 joined = true;
@@ -112,8 +115,8 @@ public class ProjectController {
 
     //프로젝트 참가 후 프로젝트,프로젝트 가입 여부를 json으로 반환
     @ResponseBody
-    @RequestMapping(value = "/project/join.pknu", produces = "application/text; charset=utf8")
-    public String projectJoin(@RequestParam("party_id") String partyId,@RequestParam("project_id") String projectId,HttpSession session){
+    @RequestMapping(value = "/project/join.pknu", produces = "application/json; charset=UTF-8")
+    public String projectJoin(@RequestParam("party_id") String partyId,@RequestParam("project_id") String projectId,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         Project project = new Project();
@@ -132,7 +135,12 @@ public class ProjectController {
         for (ProjectAndMemberId vo : projectAndMemberIdList) {
             JSONObject projectAndJoined = new JSONObject();
             projectAndJoined.put("project_id",vo.getProject().getId());
-            projectAndJoined.put("project_name",vo.getProject().getName());
+
+            projectAndJoined.put("project_name", URLEncoder.encode(vo.getProject().getName(),"UTF-8"));
+            System.out.println(vo.getProject().getName());
+//            projectAndJoined.put("project_name",Hangul.hangul(vo.getProject().getName()));
+//            System.out.println("projectAndJoined = " + Hangul.hangul(vo.getProject().getName()));
+
             boolean joined = false;
             if(vo.getMemberId()!= null){
                 joined = true;

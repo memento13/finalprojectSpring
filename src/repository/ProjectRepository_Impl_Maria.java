@@ -107,7 +107,8 @@ public class ProjectRepository_Impl_Maria implements ProjectRepository{
                 Project project = new Project();
 
                 project.setId(resultSet.getString("projects_sub.id"));
-                project.setName(Hangul.hangul(resultSet.getString("projects_sub.name")));
+//                project.setName(Hangul.hangul(resultSet.getString("projects_sub.name")));
+                project.setName(resultSet.getString("projects_sub.name"));
                 project.setParty_id(resultSet.getString("projects_sub.party_id"));
                 project.setCreateDate(resultSet.getString("projects_sub.created_date"));
                 project.setModifiedDate(resultSet.getString("projects_sub.modified_date"));
@@ -117,7 +118,7 @@ public class ProjectRepository_Impl_Maria implements ProjectRepository{
                 return vo;
             }
         };
-        String sql = "select projects_sub.id, projects_sub.name, projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;";
+        String sql = "select projects_sub.id, convert(projects_sub.name using utf8) as 'projects_sub.name', projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;";
         try{
             result = jdbcTemplate.query(sql, rowMapper, party.getId(), party.getId(), user.getId());
         }catch (Exception e){
