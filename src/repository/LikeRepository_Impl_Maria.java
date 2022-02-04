@@ -84,4 +84,17 @@ public class LikeRepository_Impl_Maria implements LikeRepository{
         }
         return result;
     }
+
+    @Override
+    public Integer deleteLikesByPost(Post post) {
+        PreparedStatementSetter pss = new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1,post.getId());
+            }
+        };
+        String sql = "delete from likes where post_id = ?";
+        int update = jdbcTemplate.update(sql, pss);
+        return update;
+    }
 }

@@ -1,12 +1,11 @@
 package service;
 
-import entity.Like;
-import entity.Post;
-import entity.Project;
-import entity.User;
+import entity.*;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import repository.LikeRepository;
+import repository.PartyRepository;
+import repository.PartyRepository_Impl_Maria;
 import repository.PostRepository;
 
 import java.io.UnsupportedEncodingException;
@@ -18,10 +17,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final PartyRepository partyRepository;
 
-    public PostService(PostRepository postRepository, LikeRepository likeRepository) {
+    public PostService(PostRepository postRepository, LikeRepository likeRepository, PartyRepository partyRepository) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
+        this.partyRepository = partyRepository;
     }
 
     /**
@@ -91,6 +92,28 @@ public class PostService {
     public Integer getLikes(Post post){
         List<Like> likes = likeRepository.findLikesByPost(post);
         return likes.size();
+    }
+
+    /**
+     * 게시글과 게시글의 좋아요를 삭제하는 함수
+     * @param post 삭제할 게시글
+     * @param user 삭제명령을 지시한 사용자
+     * @return 삭제에 성공하면 true, 실패시 fasle 반환
+     */
+    public boolean deletePost(Post post,User user){
+        boolean result = false;
+        Party party = partyRepository.findById(post.getPartyId());
+
+        // 삭제 가능한 유저인가? (글작성자, 파티장)
+        if(party.getLeaderId().equals(user.getId())||post.getUserId().equals(user.getId())){
+            //좋아요 삭제
+            likeRepository.deleteLikesByPost(post);
+            // 삭제
+            Integer uc = postRepository.deletePost(post);
+            result = true;
+        }
+
+        return result;
     }
 
 

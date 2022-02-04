@@ -34,6 +34,7 @@ public class PostController {
         this.postRepository = postRepository;
     }
 
+    //글작성페이지
     @RequestMapping("/create-post.pknu")
     public ModelAndView createPostPage(@RequestParam("project_id") String projectId, @RequestParam("party_id") String partyId, HttpSession session){
         User user = (User) session.getAttribute("user");
@@ -57,6 +58,7 @@ public class PostController {
         return mnv;
     }
 
+    //글작성로직
     @RequestMapping(value = "/create-post/create.pknu")
     public String createPost(@RequestParam(value = "project_id" ,required = true) String projectId,
                              @RequestParam(value = "party_id",required = true) String partyId,
@@ -98,6 +100,7 @@ public class PostController {
         return route;
     }
 
+    //글 보기
     @RequestMapping("/post.pknu")
     public ModelAndView postPage(@RequestParam(value = "post_id", required = true)String postId,HttpSession session){
 
@@ -123,6 +126,7 @@ public class PostController {
         return mnv;
     }
 
+    // 좋아요 로직
     @ResponseBody
     @RequestMapping(value = "/like.pknu")
     public String createLike(@RequestParam(value = "post_id",required = true)String postId,HttpSession session) throws UnsupportedEncodingException {
@@ -153,6 +157,27 @@ public class PostController {
 
 
         return resultJSONtoString;
+    }
+
+    //글 삭제 로직
+    @RequestMapping(value = "/post/delete.pknu")
+    public String deletePost(@RequestParam(value = "post_id",required = true)String postId,HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        Post post = postRepository.findById(postId);
+        boolean deleteResult = postService.deletePost(post, user);
+
+        String route = "redirect:/project.pknu?project_id="+post.getProjectId();
+        if(deleteResult){
+            route +="&msg=postDeleteSuccess";
+        }
+        else{
+            route +="&msg=postDeleteFail";
+        }
+        // 삭제 가능한 유저인가? (글작성자, 파티장)
+        // 삭제
+        // 해당 프로젝트 화면으로 리다이렉션
+        return route;
     }
 
 

@@ -11,5 +11,6 @@ public interface LikeRepository {
     public Integer addLike(Like like);
     public Like findByPostAndUser(Post post, User user);
     public List<Like> findLikesByPost(Post post);
+    public Integer deleteLikesByPost(Post post);
 
 }

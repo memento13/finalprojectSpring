@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    ${post.title} | ${post.user.name} | ${post.createDate} <br>
+    ${post.title} | ${post.user.name} | ${post.createDate} <a href="post/delete.pknu?post_id=${post.id}"> 삭제 </a><br>
 </div>
 <div>
     ${post.content}
