@@ -13,13 +13,21 @@
 <hr>
 <a href="#" onclick="writeSubmit()" >글쓰기</a>
 <hr>
-<q:forEach items="${posts}" var="post">
-    <div>
-        <div>${post.title}</div>
-        <div>${post.content}</div>
-    </div>
-    <hr>
-</q:forEach>
+<div>
+    <table>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <q:forEach items="${posts}" var="post">
+            <tr>
+                <td><a href="post.pknu?post_id=${post.id}">${post.title}</a></td>
+                <td>${post.user.name}</td>
+                <td>${post.createDate}</td>
+            </tr>
+        </q:forEach>
+    </table>
+</div>
+
 <script>
     function writeSubmit() {
         document.getElementById("write").submit();

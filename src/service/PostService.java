@@ -1,11 +1,14 @@
 package service;
 
+import entity.Like;
 import entity.Post;
 import entity.Project;
 import entity.User;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import repository.LikeRepository;
+import repository.LikeRepository_Impl_Maria;
 import repository.PostRepository;
-import repository.PostRepository_Impl_Maria;
 
 import java.util.List;
 
@@ -13,9 +16,11 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
+        this.likeRepository = likeRepository;
     }
 
     /**
@@ -45,4 +50,35 @@ public class PostService {
         List<Post> result = postRepository.findPostsByProject(project);
         return result;
     }
+
+    /**
+     * 사용자가 게시글에 추천시 작동하는 함수
+     * @param post 추천할 게시글
+     * @param user 추천하는 사용자
+     * @return 추천결과 메시지와 추천수를 json으로 반환한다.
+     * {data:{msg:추천결과메시지,count:추천수}}
+     */
+    public JSONObject doLike(Post post,User user){
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        Like like = new Like();
+        like.setPost(post);
+        like.setUser(user);
+        Integer uc = likeRepository.addLike(like);
+        //추천 성공
+        if(uc==1){
+            data.put("msg","추천했습니다");
+        }
+        else{
+            data.put("msg","추천은 한번만 가능합니다");
+        }
+        List<Like> likes = likeRepository.findLikesByPost(post);
+        data.put("count",likes.size());
+        result.put("data",data);
+        return result;
+
+    }
+
+
 }

@@ -36,7 +36,7 @@ public class PostRepository_Impl_Maria implements PostRepository {
                 vo.setContent(resultSet.getString("posts.content"));
                 User user = new User();
                 user.setId(resultSet.getString("posts.user_id"));
-                user.setName(Hangul.hangul(resultSet.getString("users.name")));
+                user.setName(resultSet.getString("users.name"));
                 vo.setUser(user);
                 vo.setProjectId(resultSet.getString("posts.project_id"));
                 vo.setPartyId(resultSet.getString("posts.party_id"));
@@ -95,6 +95,26 @@ public class PostRepository_Impl_Maria implements PostRepository {
         }catch (Exception e){
             e.printStackTrace();
             result = new ArrayList<>();
+        }
+        return result;
+    }
+
+    @Override
+    public Post findById(String postId) {
+        Post result = null;
+        List<Post> query = new ArrayList<>();
+
+        String sql = "select posts.id, posts.title, posts.content, posts.party_id, posts.project_id, posts.user_id, posts.created_date, posts.modified_date," +
+                "users.name from posts left join users on posts.user_id = users.id where posts.id = ?";
+
+        try {
+            query = jdbcTemplate.query(sql, postRowMapper, postId);
+            if(query.size()==1){
+                result = query.get(0);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result = null;
         }
         return result;
     }

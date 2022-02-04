@@ -8,4 +8,5 @@ import java.util.List;
 public interface PostRepository {
     public Post addPost(Post post);
     public List<Post> findPostsByProject(Project project);
+    public Post findById(String postId);
 }

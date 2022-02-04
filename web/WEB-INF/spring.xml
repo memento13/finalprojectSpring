@@ -78,10 +78,15 @@
     </bean>
     <bean class="service.PostService" id="postService">
         <constructor-arg ref="postRepository"/>
+        <constructor-arg ref="likeRepository"/>
     </bean>
     <bean class="controller.PostController" id="postController">
         <constructor-arg ref="postService"/>
         <constructor-arg ref="projectService"/>
+        <constructor-arg ref="postRepository"/>
+    </bean>
+    <bean class="repository.LikeRepository_Impl_Maria" id="likeRepository">
+        <constructor-arg ref="jtpl"/>
     </bean>
     <mvc:interceptors>
         <mvc:interceptor>
