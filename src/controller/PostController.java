@@ -3,8 +3,10 @@ package controller;
 import entity.Post;
 import entity.Project;
 import entity.User;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,6 +18,7 @@ import service.ProjectService;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 @Controller
 public class PostController {
@@ -106,8 +109,11 @@ public class PostController {
         boolean isAuthorizedReader = projectService.checkUserJoinedProject(post.getProject(), user);
         if(isAuthorizedReader){
             //post 객체 넘김
-            //추후 좋아요, 등등 생긴다면 넘김
             mnv.addObject("post",post);
+            //추후 좋아요, 등등 생긴다면 넘김
+            Integer likes = postService.getLikes(post);
+            mnv.addObject("likes",likes);
+
             mnv.setViewName("project/post_page");
         }
         else{
@@ -118,22 +124,35 @@ public class PostController {
     }
 
     @ResponseBody
-    @RequestMapping("/like")
-    public String createLike(@RequestParam(value = "post_id",required = true)String postId,HttpSession session){
+    @RequestMapping(value = "/like.pknu")
+    public String createLike(@RequestParam(value = "post_id",required = true)String postId,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         Post post = postRepository.findById(postId);
 
-        //추천가능한지 확인
+        String resultJSONtoString = null;
+
+        //추천가능한지 확인 가능시 access : true(doLike에서 넣어줌), 실패시 false(컨트롤러에서 넣음) 값이 들어감
         boolean isAuthorizedReader = projectService.checkUserJoinedProject(post.getProject(), user);
         if(isAuthorizedReader){
+            // 추천후 결과 json 으로 반환
+            JSONObject jsonObject = postService.doLike(post, user);
             //인코딩해야함
+//            resultJSONtoString = URLEncoder.encode(jsonObject.toString(), "UTF-8");
+            resultJSONtoString = jsonObject.toString();
+        }
+        else{
+            JSONObject resultJSON = new JSONObject();
+            JSONObject data = new JSONObject();
+            data.put("access",false);
+            resultJSON.put("data",data);
 
+//            resultJSONtoString = URLEncoder.encode(resultJSON.toString(),"UTF-8");
+            resultJSONtoString = resultJSON.toString();
         }
 
 
-        // 추천수와 메시지를 같이 보내어 추천이 반영되었는지 ex) 추천했습니다, 이미 추천한 게시글입니다, 올바른접근이 아닙니다.
-
+        return resultJSONtoString;
     }
 
 

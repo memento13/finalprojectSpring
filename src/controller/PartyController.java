@@ -13,6 +13,9 @@ import repository.Hangul;
 import service.PartyService;
 
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +74,7 @@ public class PartyController {
 
     // 파티의 메인페이지
     @RequestMapping("/party.pknu")
-    public ModelAndView partyPage(@RequestParam("party_name") String partyName,HttpSession session){
+    public ModelAndView partyPage(@RequestParam("party_name") String partyName,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         //파티 가입했는지 확인해야함 !! 추가해야함!!
@@ -79,7 +82,7 @@ public class PartyController {
         //프로젝트도 표시...? 아니면 ajax로 페이지에서 표시할까?
 
         ModelAndView mnv = new ModelAndView();
-        Map<String, Object> partyInfo = partyService.partyInfo(partyName,user);
+        Map<String, Object> partyInfo = partyService.partyInfo(URLDecoder.decode(partyName,"UTF-8"),user);
         for (String key : partyInfo.keySet()) {
             Object obj = partyInfo.get(key);
             if(obj instanceof Party){
@@ -110,7 +113,7 @@ public class PartyController {
     // 파티 검색시 ajax를 이용해 json데이터를 반환 (한글 깨짐 수정안함)
     @ResponseBody
     @RequestMapping(value = "/party-search/search.pknu", produces = "application/text; charset=utf8")
-    public String partySearch(@RequestParam(value = "keyword",required = false) String keyword,HttpSession session){
+    public String partySearch(@RequestParam(value = "keyword",required = false) String keyword,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         List<Party> partyList = new ArrayList<>();
@@ -122,7 +125,7 @@ public class PartyController {
         for (Party party : partyList) {
             JSONObject partyJson = new JSONObject();
             partyJson.put("id",party.getId());
-            partyJson.put("name",Hangul.hangul(party.getName()));
+            partyJson.put("name", URLEncoder.encode(party.getName(),"UTF-8"));
             data.put(partyJson);
         }
 

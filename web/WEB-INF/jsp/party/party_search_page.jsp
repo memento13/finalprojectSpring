@@ -18,7 +18,7 @@
                             $("#partyList").empty();
 
                             for (let party of jo.data) {
-                                $("#partyList").append($("<a></a>").text(party.name).attr("href","party/join.pknu?party_id="+party.id));
+                                $("#partyList").append($("<a></a>").text(decodeURI(party.name)).attr("href","party/join.pknu?party_id="+party.id));
                                 $("#partyList").append($("<br>"));
                             }
                         }

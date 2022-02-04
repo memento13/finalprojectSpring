@@ -7,9 +7,10 @@ import entity.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import repository.LikeRepository;
-import repository.LikeRepository_Impl_Maria;
 import repository.PostRepository;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Service
@@ -58,7 +59,7 @@ public class PostService {
      * @return 추천결과 메시지와 추천수를 json으로 반환한다.
      * {data:{msg:추천결과메시지,count:추천수}}
      */
-    public JSONObject doLike(Post post,User user){
+    public JSONObject doLike(Post post,User user) throws UnsupportedEncodingException {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
 
@@ -68,16 +69,28 @@ public class PostService {
         Integer uc = likeRepository.addLike(like);
         //추천 성공
         if(uc==1){
-            data.put("msg","추천했습니다");
+            data.put("access",true);
+            data.put("msg",URLEncoder.encode("추천했습니다","UTF-8"));
         }
         else{
-            data.put("msg","추천은 한번만 가능합니다");
+            data.put("access",true);
+            data.put("msg", URLEncoder.encode("추천은한번만가능합니다","UTF-8"));
+//            data.put("msg", "추천은한번만가능합니다");
         }
         List<Like> likes = likeRepository.findLikesByPost(post);
         data.put("count",likes.size());
         result.put("data",data);
         return result;
+    }
 
+    /**
+     * 게시글의 추천수를 반환하는 함수
+     * @param post 게시글 객체
+     * @return Integer로 반환함
+     */
+    public Integer getLikes(Post post){
+        List<Like> likes = likeRepository.findLikesByPost(post);
+        return likes.size();
     }
 
 

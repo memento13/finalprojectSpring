@@ -63,13 +63,13 @@ public class ProjectController {
             @RequestParam("project_name")String projectName,
             @RequestParam("party_id")String partyId,
             HttpSession session
-            ){
+            ) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
         Party party = partyRepository.findById(partyId);
         boolean result = projectService.createProject(party, projectName,user);
 
-        String url ="redirect:/party.pknu?party_name="+Hangul.hangul(party.getName());
+        String url ="redirect:/party.pknu?party_name="+URLEncoder.encode(party.getName(),"UTF-8");
         //프로젝트 생성 성공
         if(result){
             return url+"&msg=make_project_success";

@@ -88,7 +88,7 @@ create table likes(
 -- select projects_sub.id, projects_sub.name, projects_sub.party_id, projects_sub.created_date, projects_sub.modified_date,  project_members_sub.user_id from (select * from projects where party_id=?) projects_sub left join (select * from project_members where party_id=? and user_id=?) project_members_sub on projects_sub.id = project_members_sub.project_id;
 --
 -- select * from project_members where project_id = ? and user_id = ?;
-
+-- select * from likes where post_id = ? and user_id =?;
 SELECT COLUMN_NAME, CHARACTER_SET_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA = 'pukyung16'
