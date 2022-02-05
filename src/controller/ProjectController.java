@@ -163,6 +163,50 @@ public class ProjectController {
     }
 
     //프로젝트 탈퇴
+    @ResponseBody
+    @RequestMapping(value = "/project/leave.pknu", produces = "application/json; charset=UTF-8")
+    public String projectLeave(@RequestParam("party_id") String partyId,@RequestParam("project_id") String projectId,HttpSession session) throws UnsupportedEncodingException {
+
+        User user = (User) session.getAttribute("user");
+        Project project = new Project();
+        project.setId(projectId);
+        project.setParty_id(partyId);
+
+        //프로젝트 참가로직
+        boolean leaveResult = projectService.leaveProject(project, user);
+
+        //json 반환
+        JSONObject result = new JSONObject();
+        JSONArray data = new JSONArray();
+
+        List<ProjectAndMemberId> projectAndMemberIdList = projectService.checkUserJoinedProjectList(project.getParty(), user);
+
+        for (ProjectAndMemberId vo : projectAndMemberIdList) {
+            JSONObject projectAndJoined = new JSONObject();
+            projectAndJoined.put("project_id",vo.getProject().getId());
+
+            projectAndJoined.put("project_name", URLEncoder.encode(vo.getProject().getName(),"UTF-8"));
+            System.out.println(vo.getProject().getName());
+//            projectAndJoined.put("project_name",Hangul.hangul(vo.getProject().getName()));
+//            System.out.println("projectAndJoined = " + Hangul.hangul(vo.getProject().getName()));
+
+            boolean joined = false;
+            if(vo.getMemberId()!= null){
+                joined = true;
+            }
+            projectAndJoined.put("joined",joined);
+            data.put(projectAndJoined);
+        }
+
+        result.put("user_id",user.getId());
+        result.put("party_id",partyId);
+        result.put("result",leaveResult);
+        if(!leaveResult){
+            result.put("msg","프로젝트에 탈퇴하지 못했습니다");
+        }
+        result.put("data",data);
+        return result.toString();
+    }
 
     //프로젝트 페이지
     @RequestMapping("/project.pknu")

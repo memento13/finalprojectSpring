@@ -6,7 +6,6 @@ import entity.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +17,6 @@ import service.ProjectService;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 @Controller
 public class PostController {
@@ -179,7 +177,5 @@ public class PostController {
         // 해당 프로젝트 화면으로 리다이렉션
         return route;
     }
-
-
-
+    
 }

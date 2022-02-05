@@ -1,6 +1,5 @@
 package repository;
 
-import entity.Party;
 import entity.Project;
 import entity.ProjectMember;
 import entity.User;
@@ -50,7 +49,7 @@ public class ProjectMemberRepository_Impl_Maria implements ProjectMemberReposito
                 stmt.setString(3, projectMember.getUserId());
             }
         };
-        // id(uuid), name,leader_id, default,default
+        // party_id, project_id,user_id, default,default
         try {
             uc = jdbcTemplate.update("INSERT INTO project_members values (?,?,?,default,default)",pss);
             if(uc==1){
@@ -62,6 +61,26 @@ public class ProjectMemberRepository_Impl_Maria implements ProjectMemberReposito
         }
 
         return result;
+    }
+
+    @Override
+    public Integer deleteProjectMember(ProjectMember projectMember) {
+        Integer uc = 0;
+        PreparedStatementSetter pss = new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1, projectMember.getUserId());
+                stmt.setString(2, projectMember.getProjectId());
+            }
+        };
+        // party_id, project_id,user_id
+        try {
+            uc = jdbcTemplate.update("delete from project_members where user_id = ? and project_id = ?",pss);
+        }catch (Exception e){
+            e.printStackTrace();
+            uc = 0;
+        }
+        return uc;
     }
 
     @Override

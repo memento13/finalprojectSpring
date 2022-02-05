@@ -26,6 +26,10 @@ ${party.modifiedDate}<br>
         // alert(partyId +" : "+ projectId);
         ajaxProjectList("project/join.pknu?party_id="+partyId+"&project_id="+projectId);
     }
+    function leaveProject(partyId,projectId) {
+        // alert(partyId +" : "+ projectId);
+        ajaxProjectList("project/leave.pknu?party_id="+partyId+"&project_id="+projectId);
+    }
     $(document).ready(function () {
         ajaxProjectList("project-list.pknu?party_id=${party.id}");
     });
@@ -45,7 +49,9 @@ ${party.modifiedDate}<br>
                         if (vo.joined) {
                             // $("#project_list").append($("<a></a>").text(encodeURIComponent(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
                             $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
-                            $("#project_list").append($("<button>").text("참가중"));
+                            $("#project_list").append($("<button>").text("참가중").click(function () {
+                                leaveProject(partyId,vo.project_id);
+                            }));
                         } else {
                             // $("#project_list").append(encodeURIComponent(vo.project_name));
                             $("#project_list").append(decodeURI(vo.project_name));

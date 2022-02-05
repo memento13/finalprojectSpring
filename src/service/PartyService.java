@@ -134,6 +134,33 @@ public class PartyService {
         return result;
     }
 
+    /**
+     * 유저가 파티 탈퇴시 실행되는 함수
+     * 파티장 여부 확인
+     * 게시글 삭제 ( 관련 좋아요까지 삭제됨)
+     * 좋아요 삭제
+     * 프로젝트 멤버 삭제
+     * 파티 멤버 삭제
+     * @param party 유저가 탈퇴하려는 파티
+     * @param user 유저
+     * @return 파티 참가 성공시 true 실패시 false 반환
+     */
+    public boolean leaveParty(Party party, User user){
+
+        boolean result = false;
+        party = partyRepository.findById(party.getId());
+        //해당 파티에 가입 되어있는지 확인
+        Integer uc = partyMemberRepository.checkUserJoinedParty(party, user);
+        //파티에 가입
+        if(uc==1){
+            Integer inputUc = partyMemberRepository.addPartyMember(user, party);
+            if(inputUc==1){
+                result = true;
+            }
+        }
+        return result;
+    }
+
 
     /**
      * 유저가 해당파티의 파티장인지 true false 로 알려줌

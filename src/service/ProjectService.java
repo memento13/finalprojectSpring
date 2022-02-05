@@ -125,4 +125,25 @@ public class ProjectService {
         }
         return resultMap;
     }
+
+    /**
+     * project에서 유저 탈퇴와 탈퇴 성공여부를 반환하는 함수
+     * 프로젝트에서 탈퇴시 게시글은 사라지지 않음
+     * @param project 탈퇴 하려는 프로젝트
+     * @param user 탈퇴하려는 유저
+     * @return 성공시 true, 실패시 false 반환
+     */
+    public boolean leaveProject(Project project,User user){
+        boolean result = false;
+
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setPartyId(project.getParty_id());
+        projectMember.setProjectId(project.getId());
+        projectMember.setUserId(user.getId());
+        Integer uc = projectMemberRepository.deleteProjectMember(projectMember);
+        if(uc==1){
+            result = true;
+        }
+        return result;
+    }
 }
