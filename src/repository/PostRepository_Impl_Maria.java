@@ -1,5 +1,6 @@
 package repository;
 
+import entity.PartyMember;
 import entity.Post;
 import entity.Project;
 import entity.User;
@@ -100,6 +101,22 @@ public class PostRepository_Impl_Maria implements PostRepository {
     }
 
     @Override
+    public List<Post> findPostsByPartyMember(PartyMember partyMember) {
+        List<Post> result = new ArrayList<>();
+
+        String sql = "select posts.id, posts.title, posts.content, posts.party_id, posts.project_id, posts.user_id, posts.created_date, posts.modified_date," +
+                "users.name from posts left join users on posts.user_id = users.id where user_id = ? and party_id = ? order by created_date desc";
+
+        try {
+            result = jdbcTemplate.query(sql, postRowMapper, partyMember.getUserId(),partyMember.getPartyId());
+        }catch (Exception e){
+            e.printStackTrace();
+            result = new ArrayList<>();
+        }
+        return result;
+    }
+
+    @Override
     public Post findById(String postId) {
         Post result = null;
         List<Post> query = new ArrayList<>();
@@ -133,4 +150,6 @@ public class PostRepository_Impl_Maria implements PostRepository {
         int update = jdbcTemplate.update(sql, pss);
         return update;
     }
+
+
 }

@@ -1,6 +1,8 @@
 package service;
 
 import entity.Party;
+import entity.PartyMember;
+import entity.Post;
 import entity.User;
 import org.springframework.stereotype.Service;
 import repository.*;
@@ -16,11 +18,22 @@ public class PartyService {
     private final PartyMemberRepository partyMemberRepository;
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
-    public PartyService(UserRepository userRepository, PartyRepository partyRepository, PartyMemberRepository partyMemberRepository) {
+    public PartyService(UserRepository userRepository,
+                        PartyRepository partyRepository,
+                        PartyMemberRepository partyMemberRepository,
+                        PostRepository postRepository,
+                        LikeRepository likeRepository,
+                        ProjectMemberRepository projectMemberRepository) {
         this.partyMemberRepository = partyMemberRepository;
         this.partyRepository = partyRepository;
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.likeRepository = likeRepository;
+        this.projectMemberRepository = projectMemberRepository;
     }
 
     /**
@@ -137,8 +150,9 @@ public class PartyService {
     /**
      * 유저가 파티 탈퇴시 실행되는 함수
      * 파티장 여부 확인
-     * 게시글 삭제 ( 관련 좋아요까지 삭제됨)
-     * 좋아요 삭제
+     * 게시글 삭제 ( 관련 좋아요까지 삭제)
+     * 해당 파티와 관련된 게시글에 남긴 좋아요는 삭제 안함
+     * (나중에 좋아요한 글 열람시 해당로직에서 차단되기 때문)
      * 프로젝트 멤버 삭제
      * 파티 멤버 삭제
      * @param party 유저가 탈퇴하려는 파티
@@ -148,16 +162,27 @@ public class PartyService {
     public boolean leaveParty(Party party, User user){
 
         boolean result = false;
-        party = partyRepository.findById(party.getId());
-        //해당 파티에 가입 되어있는지 확인
-        Integer uc = partyMemberRepository.checkUserJoinedParty(party, user);
-        //파티에 가입
-        if(uc==1){
-            Integer inputUc = partyMemberRepository.addPartyMember(user, party);
-            if(inputUc==1){
-                result = true;
+        //파티 멤버 객체 찾아오기
+        PartyMember partyMember = partyMemberRepository.findPartyMemberByPartyUser(party, user);
+        if(partyMember != null){
+            //파티장이 아니면 삭제로직
+            if(partyMember.getGrade()==1){
+
+                //게시글 삭제 ( 관련 좋아요까지 삭제)
+                List<Post> posts = postRepository.findPostsByPartyMember(partyMember);
+                for (Post post : posts) {
+                    likeRepository.deleteLikesByPost(post);
+                    postRepository.deletePost(post);
+                }
+                projectMemberRepository.deleteProjectMembersByPartyMember(partyMember);
+                //파티 멤버 삭제
+                Integer uc = partyMemberRepository.deletePartyMember(partyMember);
+                if(uc==1){
+                    result =true;
+                }
             }
         }
+
         return result;
     }
 

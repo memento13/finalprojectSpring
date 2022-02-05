@@ -16,6 +16,9 @@ ${party.modifiedDate}<br>
 <q:if test="${isPartyLeader}">
     <a href="create-project.pknu?party_id=${party.id}">프로젝트 생성</a><br>
 </q:if>
+<q:if test="${!isPartyLeader}">
+    <a href="party/leave.pknu?party_id=${party.id}">파티 탈퇴</a><br>
+</q:if>
 <hr>
 <div id="project_list">
 

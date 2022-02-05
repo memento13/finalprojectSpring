@@ -1,6 +1,7 @@
 package repository;
 
 import entity.Party;
+import entity.PartyMember;
 import entity.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -65,6 +66,60 @@ public class PartyMemberRepository_Impl_Maria implements PartyMemberRepository {
             uc=0;
         }
         return uc;
+    }
+
+
+    @Override
+    public Integer deletePartyMember(PartyMember partyMember) {
+        Integer uc = 0;
+
+        PreparedStatementSetter pss = new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1,partyMember.getUserId());
+                stmt.setString(2,partyMember.getPartyId());
+            }
+        };
+        try {
+            //user_id, party_id
+            uc = jdbcTemplate.update("delete from party_members where user_id = ? and party_id = ?",pss);
+        }catch (Exception e){
+            e.printStackTrace();
+            uc=0;
+        }
+
+        return uc;
+    }
+
+
+    @Override
+    public PartyMember findPartyMemberByPartyUser(Party party, User user) {
+        PartyMember result = null;
+
+        String sql  = "select * from party_members where party_id = ? and user_id = ?";
+
+        try {
+            List<PartyMember> query = jdbcTemplate.query(sql, new RowMapper<PartyMember>() {
+                        @Override
+                        public PartyMember mapRow(ResultSet resultSet, int i) throws SQLException {
+                            PartyMember vo = new PartyMember();
+                            vo.setPartyId(resultSet.getString("party_id"));
+                            vo.setUserId(resultSet.getString("user_id"));
+                            vo.setGrade(resultSet.getInt("grade"));
+                            vo.setCreateDate(resultSet.getString("created_date"));
+                            vo.setModifiedDate(resultSet.getString("modified_date"));
+                            return vo;
+                        }
+                    }
+                    , party.getId(), user.getId());
+            if(query.size()==1){
+                result = query.get(0);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result = null;
+        }
+        return result;
     }
 
     @Override

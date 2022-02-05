@@ -50,6 +50,9 @@
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="partyRepository"/>
         <constructor-arg ref="partyMemberRepository"/>
+        <constructor-arg ref="postRepository"/>
+        <constructor-arg ref="likeRepository"/>
+        <constructor-arg ref="projectMemberRepository"/>
     </bean>
 <!--    <bean class="interceptor.AuthInterceptor" id="authInterceptor"></bean>-->
     <bean class="controller.PartyController" id="partyController">

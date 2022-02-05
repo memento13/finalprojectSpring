@@ -97,4 +97,5 @@ public class LikeRepository_Impl_Maria implements LikeRepository{
         int update = jdbcTemplate.update(sql, pss);
         return update;
     }
+
 }

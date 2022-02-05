@@ -1,5 +1,6 @@
 package repository;
 
+import entity.PartyMember;
 import entity.Project;
 import entity.ProjectMember;
 import entity.User;
@@ -84,6 +85,26 @@ public class ProjectMemberRepository_Impl_Maria implements ProjectMemberReposito
     }
 
     @Override
+    public Integer deleteProjectMembersByPartyMember(PartyMember partyMember) {
+        Integer uc = 0;
+        PreparedStatementSetter pss = new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1, partyMember.getUserId());
+                stmt.setString(2, partyMember.getPartyId());
+            }
+        };
+        // party_id, user_id
+        try {
+            uc = jdbcTemplate.update("delete from project_members where user_id = ? and party_id = ?",pss);
+        }catch (Exception e){
+            e.printStackTrace();
+            uc = 0;
+        }
+        return uc;
+    }
+
+    @Override
     public ProjectMember findByProjectAndUser(Project project, User user) {
         ProjectMember result = null;
         String sql = "select * from project_members where project_id = ? and user_id = ?";
@@ -97,4 +118,6 @@ public class ProjectMemberRepository_Impl_Maria implements ProjectMemberReposito
         }
         return result;
     }
+
+
 }

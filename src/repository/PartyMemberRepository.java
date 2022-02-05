@@ -1,6 +1,7 @@
 package repository;
 
 import entity.Party;
+import entity.PartyMember;
 import entity.User;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface PartyMemberRepository {
 
     public List<User> findUsersByParty(Party party);
     public Integer checkUserJoinedParty(Party party,User user);
+    public PartyMember findPartyMemberByPartyUser(Party party,User user);
+    public Integer deletePartyMember(PartyMember partyMember);
 
 }

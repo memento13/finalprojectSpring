@@ -150,14 +150,14 @@ public class PartyController {
         }
     }
 
-    // 파티 참가 로직
+    // 파티 탈퇴 로직
     @RequestMapping("/party/leave.pknu")
     public String partyLeave(@RequestParam(value = "party_id") String partyId, HttpSession session){
         User user = (User) session.getAttribute("user");
         Party party = new Party();
         party.setId(partyId);
 
-        boolean result = partyService.joinParty(party, user);
+        boolean result = partyService.leaveParty(party, user);
         if(result){
             return "redirect:/main.pknu?result=leavePartySuccess";
         }
