@@ -186,7 +186,6 @@ public class PartyService {
         return result;
     }
 
-
     /**
      * 유저가 해당파티의 파티장인지 true false 로 알려줌
      * @param party 파티장인지 조사할 대상 파티
@@ -198,6 +197,26 @@ public class PartyService {
         party = partyRepository.findById(party.getId());
         if(party != null){
             if(party.getLeaderId().equals(user.getId())){
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 유저가 파티 삭제시 실행되는 함수
+     * 유저가 파티를 삭제할 수 있는 권한(파티장)인지 확인
+     * 맞으면 파티 삭제 삭제 (on delete cascade 여서 연관 외래키 삭제됨)
+     * @param party
+     * @param user
+     * @return
+     */
+    public boolean deleteParty(Party party, User user){
+        boolean result = false;
+        party = partyRepository.findById(party.getId());
+        if(user.getId().equals(party.getLeaderId())){
+            Integer uc = partyRepository.deleteParty(party);
+            if(uc==1){
                 result = true;
             }
         }

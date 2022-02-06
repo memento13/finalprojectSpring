@@ -24,6 +24,10 @@ ${party.modifiedDate}<br>
 
 </div>
 
+<q:if test="${isPartyLeader}">
+    <a href="party/delete.pknu?party_id=${party.id}">파티삭제</a><br>
+</q:if>
+
 <script>
     function joinProject(partyId,projectId) {
         // alert(partyId +" : "+ projectId);

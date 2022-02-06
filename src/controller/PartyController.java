@@ -166,5 +166,20 @@ public class PartyController {
         }
     }
 
+    //파티 삭제 로직
+    @RequestMapping("/party/delete.pknu")
+    public String partyDelete(@RequestParam(value = "party_id") String partyId, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        Party party = new Party();
+        party.setId(partyId);
+        boolean result = partyService.deleteParty(party, user);
+        if(result){
+            return "redirect:/main.pknu?result=deletePartySuccess";
+        }
+        else{
+            return "redirect:/main.pknu?result=deletePartyFail";
+        }
+    }
+
 
 }

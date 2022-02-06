@@ -69,6 +69,23 @@ public class PartyRepository_Impl_Maria implements PartyRepository{
     }
 
     @Override
+    public Integer deleteParty(Party party) {
+        String sql = "delete from parties where id = ?";
+        Integer uc = 0;
+        try{
+            uc = jdbcTemplate.update(sql, new PreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement stmt) throws SQLException {
+                    stmt.setString(1,party.getId());
+                }
+            });
+        }catch (Exception e){
+            uc = 0;
+        }
+        return uc;
+    }
+
+    @Override
     public List<Party> findByLeaderId(User leader) {
         List<Party> result = new ArrayList<>();
 

@@ -18,4 +18,6 @@ public interface PartyRepository {
     public List<Party> findDidNotJoinPartiesByUser(User user);
 
     public List<Party> findDidNotJoinPartiesByUserAndKeyword(User user, String keyword);
+
+    public Integer deleteParty(Party party);
 }
