@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import repository.Hangul;
 import repository.PartyRepository;
+import repository.ProjectRepository;
+import repository.ProjectRepository_Impl_Maria;
 import service.PartyService;
 import service.ProjectService;
 
@@ -31,11 +33,16 @@ public class ProjectController {
     private final ProjectService projectService;
     private final PartyService partyService;
     private final PartyRepository partyRepository;
+    private final ProjectRepository projectRepository;
 
-    public ProjectController(ProjectService projectService, PartyService partyService, PartyRepository partyRepository) {
+    public ProjectController(ProjectService projectService,
+                             PartyService partyService,
+                             PartyRepository partyRepository,
+                             ProjectRepository projectRepository) {
         this.projectService = projectService;
         this.partyService = partyService;
         this.partyRepository = partyRepository;
+        this.projectRepository = projectRepository;
     }
 
     //프로젝트 생성페이지
@@ -208,6 +215,24 @@ public class ProjectController {
         return result.toString();
     }
 
+    // 프로젝트 삭제로직
+    @RequestMapping("/project/delete.pknu")
+    public String projectDelete(@RequestParam("project_id")String projectId,HttpSession session) throws UnsupportedEncodingException {
+
+        User user = (User) session.getAttribute("user");
+        Project project = projectRepository.findById(projectId);
+        Party party = partyRepository.findById(project.getParty_id());
+        boolean deleteResult = projectService.deleteProject(project, user);
+
+        String route = "redirect:/main.pknu?msg=incorrectConnection";
+        if(deleteResult){
+            route = "redirect:/party.pknu?party_name="+URLEncoder.encode(party.getName(),"UTF-8");
+        }
+
+        return route;
+    }
+
+
     //프로젝트 페이지
     @RequestMapping("/project.pknu")
     public ModelAndView projectPage(@RequestParam("project_id") String project_id,HttpSession session) throws UnsupportedEncodingException {
@@ -228,9 +253,19 @@ public class ProjectController {
             List<Post> posts = new ArrayList<>();
             for (String key :projectInfo.keySet()){
                 Object obj = projectInfo.get(key);
+
+                //프로젝트 정보 뷰로 넘김
                 if(obj instanceof Project){
                     mnv.addObject(key,(Project) obj);
+
+                    //프로젝트가 속한 파티의 리더인지 여부를 true, false로 정하여 뷰로 넘김
+                    boolean isPartyLeader = false;
+                    if(((Project)obj).getParty().getLeaderId().equals(user.getId())){
+                        isPartyLeader = true;
+                    }
+                    mnv.addObject("isPartyLeader",isPartyLeader);
                 }
+                //게시글 정보 뷰로 넘김
                 if(key.equals("posts")){
                     posts = (List<Post>) obj;
                     for (Post post : posts) {
@@ -242,6 +277,7 @@ public class ProjectController {
                     mnv.addObject(key,posts);
                 }
             }
+
 
         }
         else{

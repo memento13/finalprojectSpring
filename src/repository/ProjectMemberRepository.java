@@ -10,5 +10,6 @@ public interface ProjectMemberRepository {
     ProjectMember findByProjectAndUser(Project project,User user);
     Integer deleteProjectMember(ProjectMember projectMember);
     Integer deleteProjectMembersByPartyMember(PartyMember partyMember);
+    Integer deleteProjectMembersByProject(Project project);
 
 }

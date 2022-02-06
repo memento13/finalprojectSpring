@@ -151,5 +151,17 @@ public class PostRepository_Impl_Maria implements PostRepository {
         return update;
     }
 
+    @Override
+    public Integer deletePostByProject(Project project) {
+        PreparedStatementSetter pss = new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1,project.getId());
+            }
+        };
 
+        String sql = "delete from posts where project_id = ?";
+        int update = jdbcTemplate.update(sql, pss);
+        return update;
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 public interface ProjectRepository {
 
     public Project addProject(Project project);
+    public Integer deleteProject(Project project);
     public List<Project> findProjectsByParty(Party party);
     public Project findProjectByPartyAndName(Party party,String projectName);
     public List<ProjectAndMemberId> findProjectAndMemberIdByPartyAndUser(Party party, User user);

@@ -6,6 +6,9 @@
 </head>
 <body>
 프로젝트 이름 : ${project.name}
+<q:if test="${isPartyLeader}">
+    <a href="project/delete.pknu?project_id=${project.id}">프로젝트 삭제</a>
+</q:if>
 <form id="write" action="create-post.pknu" method="post">
     <input type="hidden" name="project_id" value="${project.id}">
     <input type="hidden" name="party_id" value="${project.party_id}">

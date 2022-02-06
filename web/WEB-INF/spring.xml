@@ -67,11 +67,13 @@
         <constructor-arg ref="userRepository"/>
         <constructor-arg ref="projectMemberRepository"/>
         <constructor-arg ref="postService"/>
+        <constructor-arg ref="postRepository"/>
     </bean>
     <bean class="controller.ProjectController" id="projectController">
         <constructor-arg ref="projectService"/>
         <constructor-arg ref="partyService"/>
         <constructor-arg ref="partyRepository"/>
+        <constructor-arg ref="projectRepository"/>
     </bean>
     <bean class="repository.ProjectMemberRepository_Impl_Maria" id="projectMemberRepository">
         <constructor-arg ref="jtpl"/>

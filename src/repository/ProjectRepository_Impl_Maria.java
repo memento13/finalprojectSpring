@@ -142,4 +142,21 @@ public class ProjectRepository_Impl_Maria implements ProjectRepository{
         }
         return project;
     }
+
+    @Override
+    public Integer deleteProject(Project project) {
+        Integer uc = 0;
+        String sql = "delete from projects where id = ?";
+        try {
+            uc = jdbcTemplate.update(sql, new PreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement stmt) throws SQLException {
+                    stmt.setString(1, project.getId());
+                }
+            });
+        }catch (Exception e){
+            uc =0;
+        }
+        return uc;
+    }
 }

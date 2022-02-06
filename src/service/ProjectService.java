@@ -15,13 +15,20 @@ public class ProjectService {
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final PostRepository postRepository;
     private final PostService postService;
 
-    public ProjectService(PartyRepository partyRepository, ProjectRepository projectRepository, UserRepository userRepository, ProjectMemberRepository projectMemberRepository, PostService postService) {
+    public ProjectService(PartyRepository partyRepository,
+                          ProjectRepository projectRepository,
+                          UserRepository userRepository,
+                          ProjectMemberRepository projectMemberRepository,
+                          PostRepository postRepository,
+                          PostService postService) {
         this.partyRepository = partyRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.projectMemberRepository = projectMemberRepository;
+        this.postRepository = postRepository;
         this.postService = postService;
 
     }
@@ -116,6 +123,7 @@ public class ProjectService {
     public Map<String,Object> projectInfo(Project project){
         Map<String, Object> resultMap = new HashMap<>();
         project = projectRepository.findById(project.getId());
+        project.setParty(partyRepository.findById(project.getParty_id()));
         if(project != null){
             resultMap.put("project",project);
         }
@@ -123,6 +131,7 @@ public class ProjectService {
         if(posts != null){
             resultMap.put("posts",posts);
         }
+
         return resultMap;
     }
 
@@ -145,5 +154,42 @@ public class ProjectService {
             result = true;
         }
         return result;
+    }
+
+    /**
+     * project를 삭제시 실행되는 함수
+     * 실행하는 유저가 프로젝트를 삭제할 수 있는 유저(파티장)인지 확인
+     * 프로젝트에 속한 게시글 삭제
+     * 프로젝트 멤버에서 해당 프로젝트멤버 삭제
+     * 프로젝트 삭제
+     * @param project 삭제하려는 프로젝트 (id 값만 있는 깡통임)
+     * @param user 삭제하려고 시도하는 유저 ( 프로젝트가 속한 파티장인지 검증해야함)
+     * @return 삭제 성공시 true 실패시 false 반환
+     */
+    public boolean deleteProject(Project project,User user){
+        boolean result = false;
+        project = projectRepository.findById(project.getId());
+        project.setParty(partyRepository.findById(project.getParty_id()));
+
+        //파티장인지 검증
+        boolean isPartyLeader = false;
+        if(project.getParty().getLeaderId().equals(user.getId())){
+            isPartyLeader = true;
+        }
+
+        if(isPartyLeader){
+
+            postRepository.deletePostByProject(project);
+            projectMemberRepository.deleteProjectMembersByProject(project);
+            Integer uc = projectRepository.deleteProject(project);
+            System.out.println("uc = " + uc);
+            if(uc==1){
+                result = true;
+            }
+        }
+        System.out.println("ProjectService.deleteProject");
+        System.out.println("result = " + result);
+
+        return  result;
     }
 }
