@@ -101,6 +101,43 @@ public class CommentRepository_Impl_Maria implements CommentRepository {
     }
 
     @Override
+    public Comment findCommentById(String commentId) {
+        Comment result = null;
+        RowMapper<Comment> rowMapper = new RowMapper<Comment>() {
+            @Override
+            public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
+                Comment comment = new Comment();
+                comment.setId(resultSet.getString("comments.id"));
+                comment.setContent(resultSet.getString("comments.content"));
+                User user = new User();
+                user.setId(resultSet.getString("comments.user_id"));
+                user.setName(resultSet.getString("users.name"));
+                comment.setUser(user);
+                comment.setPostId(resultSet.getString("comments.post_id"));
+                if(resultSet.getString("comments.parents_comment_id") != null){
+                    comment.setParentCommentId(resultSet.getString("comments.parents_comment_id"));
+                }
+                comment.setCreateDate(resultSet.getString("comments.created_date"));
+                comment.setModifiedDate(resultSet.getString("comments.modified_date"));
+
+                return comment;
+            }
+        };
+
+        String sql = "select comments.id, comments.content, comments.user_id, comments.post_id, comments.parents_comment_id, comments.created_date, comments.modified_date, users.name" +
+                " from comments left join users on comments.user_id = users.id where comments.id = ? order by created_date asc";
+        try {
+            List<Comment> query = jdbcTemplate.query(sql, rowMapper, commentId);
+            if(query.size()==1){
+                result = query.get(0);
+            }
+        }catch (Exception e){
+            result = null;
+        }
+        return result;
+    }
+
+    @Override
     public Integer deleteComment(Comment comment) {
 
         Integer uc = 0;

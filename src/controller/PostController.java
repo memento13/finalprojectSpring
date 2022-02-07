@@ -280,13 +280,16 @@ public class PostController {
                               HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
+        System.out.println("postId = " + postId);
+        System.out.println("commentId = " + commentId);
         Post post = postRepository.findById(postId);
 
         Comment comment = new Comment();
         comment.setPost(post);
-        comment.setUser(user);
+//        comment.setUser(user);
         comment.setId(commentId);
-        boolean addCommentResult = postService.deleteComment(comment, user);
+        boolean deleteCommentResult = postService.deleteComment(comment, user);
+        System.out.println("deleteCommentResult = " + deleteCommentResult);
 
         String resultJSONtoString = null;
 
@@ -306,7 +309,5 @@ public class PostController {
         System.out.println("resultJSONtoString = " + resultJSONtoString);
         return resultJSONtoString;
     }
-
-
 
 }

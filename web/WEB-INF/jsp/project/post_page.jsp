@@ -80,14 +80,24 @@
                         for(let comment of jo.data){
                             let commentId = comment.comment_id
                             $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
-                            $("#"+comment.comment_id).append($("<p></p>")
+                            $("#"+comment.comment_id).append($("<span></span>")
                                 .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
-                            ).attr("onclick","createReplyForm('"+commentId+"')");
+                                .attr("onclick","createReplyForm('"+commentId+"')")
+                            );
+                            if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                                $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
+                            }
+                            $("#"+comment.comment_id).append($("<br>"));
                             for(reply of comment.replies ){
-                                $("#"+comment.comment_id).append($("<p></p>")
+                                $("#"+comment.comment_id).append($("<span></span>")
                                     .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
                                 );
+                                if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
+                                    $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
+                                }
+                                $("#"+comment.comment_id).append($("<br>"));
                             }
+                            $("#"+comment.comment_id).append($("<hr>"));
                         }
                     }
                 }
@@ -113,24 +123,28 @@
                 console.log(JSON.stringify(jo));
                 // alert(JSON.stringify(json));
                 if(jo.access){
-                    // $("#commentsDisplay").empty();
-                    // for(let comment of json.data){
-                    //     $("#commentsDisplay").append($("<p></p>")
-                    //         .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date))
-                    // }
-                    // $("#commentContent").val("");
                     $("#commentsDisplay").empty();
                     for(let comment of jo.data){
                         let commentId = comment.comment_id
                         $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
-                        $("#"+comment.comment_id).append($("<p></p>")
+                        $("#"+comment.comment_id).append($("<span></span>")
                             .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
-                        ).attr("onclick","createReplyForm('"+commentId+"')");
+                            .attr("onclick","createReplyForm('"+commentId+"')")
+                        );
+                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                            $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
+                        }
+                        $("#"+comment.comment_id).append($("<br>"));
                         for(reply of comment.replies ){
-                            $("#"+comment.comment_id).append($("<p></p>")
+                            $("#"+comment.comment_id).append($("<span></span>")
                                 .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
                             );
+                            if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
+                                $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
+                            }
+                            $("#"+comment.comment_id).append($("<br>"));
                         }
+                        $("#"+comment.comment_id).append($("<hr>"));
                     }
                 }
             }
@@ -149,27 +163,30 @@
                 alert(status+ " : "+error);
             },
             success : function(jo){
-                console.log(JSON.stringify(jo));
                 // alert(JSON.stringify(json));
                 if(jo.access){
-                    // $("#commentsDisplay").empty();
-                    // for(let comment of json.data){
-                    //     $("#commentsDisplay").append($("<p></p>")
-                    //         .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date))
-                    // }
-                    // $("#commentContent").val("");
                     $("#commentsDisplay").empty();
                     for(let comment of jo.data){
                         let commentId = comment.comment_id
                         $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
-                        $("#"+comment.comment_id).append($("<p></p>")
+                        $("#"+comment.comment_id).append($("<span></span>")
                             .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
-                        ).attr("onclick","createReplyForm('"+commentId+"')");
+                            .attr("onclick","createReplyForm('"+commentId+"')")
+                        );
+                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                            $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
+                        }
+                        $("#"+comment.comment_id).append($("<br>"));
                         for(reply of comment.replies ){
-                            $("#"+comment.comment_id).append($("<p></p>")
+                            $("#"+comment.comment_id).append($("<span></span>")
                                 .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
                             );
+                            if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
+                                $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
+                            }
+                            $("#"+comment.comment_id).append($("<br>"));
                         }
+                        $("#"+comment.comment_id).append($("<hr>"));
                     }
                 }
             }
@@ -178,7 +195,7 @@
 
     function createReplyForm(commentId) {
         // alert(commentId);
-        $("#"+commentId).removeAttr("onclick");
+        $("#"+commentId+">span").removeAttr("onclick");
         let newForm = $('<form></form>');
         newForm.attr("name",commentId+"_reply");
         newForm.attr("method","post");
@@ -189,6 +206,48 @@
         $("#"+commentId).append(newForm);
         $("#"+commentId).append($("<button >작성</button>").attr("onclick","replyCreate('"+commentId+"_reply" +"')"));
     }
+
+    function deleteComment(commentId) {
+        // alert('delete : '+commentId);
+        $.ajax({
+            type : 'get',
+            url : 'comment/delete.pknu?post_id=${post.id}&comment_id='+commentId,
+            dataType : 'json',
+            error: function(xhr, status, error){
+                alert("error");
+                alert(status+ " : "+error);
+            },
+            success : function(jo){
+                // alert(JSON.stringify(json));
+                if(jo.access){
+                    $("#commentsDisplay").empty();
+                    for(let comment of jo.data){
+                        let commentId = comment.comment_id
+                        $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
+                        $("#"+comment.comment_id).append($("<span></span>")
+                            .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
+                            .attr("onclick","createReplyForm('"+commentId+"')")
+                        );
+                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                            $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
+                        }
+                        $("#"+comment.comment_id).append($("<br>"));
+                        for(reply of comment.replies ){
+                            $("#"+comment.comment_id).append($("<span></span>")
+                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
+                            );
+                            if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
+                                $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
+                            }
+                            $("#"+comment.comment_id).append($("<br>"));
+                        }
+                        $("#"+comment.comment_id).append($("<hr>"));
+                    }
+                }
+            }
+        })
+    }
+
 </script>
 </body>
 </html>

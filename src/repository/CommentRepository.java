@@ -9,4 +9,5 @@ public interface CommentRepository {
     public Integer addComment(Comment comment);
     public List<Comment> findCommentByPost(Post post);
     public Integer deleteComment(Comment comment);
+    public Comment findCommentById(String commentId);
 }

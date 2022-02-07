@@ -243,11 +243,12 @@ public class PostService {
      */
     public boolean deleteComment(Comment comment, User user) {
         boolean result = false;
-        Post post = postRepository.findById(comment.getPostId());
-
+//        Post post = postRepository.findById(comment.getPostId());
+        Post post = comment.getPost();
+        comment = commentRepository.findCommentById(comment.getId());
 //        유저가 댓글을 삭제 할 수 있는지 검증(작성자이거나 파티장인가?)
         post.setParty(partyRepository.findById(post.getPartyId()));
-        if (user.getName().equals(post.getParty().getLeaderId()) || user.getName().equals(post.getUserId())) {
+        if (user.getId().equals(post.getParty().getLeaderId()) || user.getId().equals(post.getUserId()) || user.getId().equals(comment.getUserId())) {
             Integer uc = 0;
             uc = commentRepository.deleteComment(comment);
             if (uc == 1) {
