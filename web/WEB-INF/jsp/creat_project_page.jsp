@@ -4,6 +4,7 @@
     <title>프로젝트 생성페이지</title>
 </head>
 <body>
+<jsp:include page="header.jsp"/>
 ${party.name}<br>
 <form method="post" action="create-project/create.pknu">
     프로젝트이름 : <input type="text" name="project_name">

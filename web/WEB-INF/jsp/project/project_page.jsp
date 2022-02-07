@@ -5,6 +5,7 @@
     <title>프로젝트페이지</title>
 </head>
 <body>
+<jsp:include page="/WEB-INF/jsp/header.jsp"/>
 프로젝트 이름 : ${project.name}
 <q:if test="${isPartyLeader}">
     <a href="project/delete.pknu?project_id=${project.id}">프로젝트 삭제</a>

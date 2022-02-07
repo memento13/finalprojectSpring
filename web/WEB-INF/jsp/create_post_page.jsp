@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 </head>
 <body>
+<jsp:include page="header.jsp"/>
 <form method="post" action="create-post/create.pknu" onsubmit="saveContent()" >
     <input type="hidden" name="project_id" value="${project_id}">
     <input type="hidden" name="party_id" value="${party_id}">

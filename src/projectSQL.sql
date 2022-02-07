@@ -78,6 +78,20 @@ create table likes(
     primary key(post_id,user_id)
 );
 
+create table comments(
+    id varchar (40) primary key ,
+    content text,
+    user_id varchar(40) not null,
+    post_id varchar(40) not null,
+    parents_comment_id varchar(40),
+    created_date timestamp(3) not null default now(3),
+    modified_date timestamp(3) not null default now(3) on update now(3),
+    foreign key(parents_comment_id) references comments(id) on update cascade on delete cascade,
+    foreign key(post_id) references posts(id) on update cascade on delete cascade,
+    foreign key(user_id) references users(id) on update cascade on delete cascade
+);
+
+-- select comments.id, comments.content, comments.user_id, comments.post_id, comments.parents_comment_id, comments.created_date, comments.modified_date, users.name from comments left join users on comments.user_id = users.id where post_id = ? order by created_date asc;
 -- select posts.id, posts.title, posts.content, posts.party_id, posts.project_id, posts.user_id, posts.created_date, posts.modified_date,users.name from posts left join users on posts.user_id = users.id where project_id=? order by created_date desc;
 -- insert into posts values (?,?,?,?,?,?,default ,default );
 --

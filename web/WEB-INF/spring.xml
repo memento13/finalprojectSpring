@@ -85,6 +85,8 @@
         <constructor-arg ref="postRepository"/>
         <constructor-arg ref="likeRepository"/>
         <constructor-arg ref="partyRepository"/>
+        <constructor-arg ref="commentRepository"/>
+        <constructor-arg ref="projectMemberRepository"/>
     </bean>
     <bean class="controller.PostController" id="postController">
         <constructor-arg ref="postService"/>
@@ -94,6 +96,10 @@
     <bean class="repository.LikeRepository_Impl_Maria" id="likeRepository">
         <constructor-arg ref="jtpl"/>
     </bean>
+    <bean class="repository.CommentRepository_Impl_Maria" id="commentRepository">
+        <constructor-arg ref="jtpl"/>
+    </bean>
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**.pknu"/>

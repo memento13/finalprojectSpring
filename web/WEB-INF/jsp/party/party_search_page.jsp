@@ -35,7 +35,8 @@
     </script>
     <title>파티 검색</title>
 </head>
-
+<body>
+<jsp:include page="/WEB-INF/jsp/header.jsp"/>
 <input type="text" name="keyword" id="keyword"/>
 <input type="button" name="searchBtn" id="searchBtn" value="검색"></input>
 <div id="partyList">
