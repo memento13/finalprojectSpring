@@ -36,6 +36,7 @@
     <bean class="controller.LoginController">
         <constructor-arg ref="connectionCheck"/>
         <constructor-arg ref="userService"/>
+        <constructor-arg ref="captcha"/>
     </bean>
     <bean class="service.UserService" id="userService">
         <constructor-arg ref="userRepository"/>
@@ -98,6 +99,10 @@
     </bean>
     <bean class="repository.CommentRepository_Impl_Maria" id="commentRepository">
         <constructor-arg ref="jtpl"/>
+    </bean>
+    <bean class="captcha.Captcha" id="captcha">
+        <property name="clientId" value="${dbinfo.clientId}"></property>
+        <property name="clientSecret" value="${dbinfo.clientSecret}"></property>
     </bean>
 
     <mvc:interceptors>

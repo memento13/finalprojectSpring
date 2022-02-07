@@ -4,11 +4,13 @@ import entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import repository.ConnectionCheck;
 
 import service.UserService;
+import captcha.Captcha;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,11 +19,13 @@ public class LoginController {
 
     private final UserService userService;
     private final ConnectionCheck connectionCheck;
+    private final Captcha captcha;
 
     //오토와이어 안넣어도 되나? 됨!
-    public LoginController(ConnectionCheck connectionCheck, UserService userService) {
+    public LoginController(ConnectionCheck connectionCheck, UserService userService, Captcha captcha) {
         this.connectionCheck = connectionCheck;
         this.userService = userService;
+        this.captcha = captcha;
     }
 
     @ResponseBody
@@ -31,6 +35,7 @@ public class LoginController {
         System.out.println(connectionCheck.toString());
         return connectionCheck.dbConnectionCheck();
     }
+
     //    로그인페이지로 이동
     @RequestMapping("/login.pknu")
     public ModelAndView loginPage(HttpSession session){
@@ -60,14 +65,27 @@ public class LoginController {
         System.out.println("LoginController.createAccountPage");
         ModelAndView mnv = new ModelAndView();
 
+        //캡챠 넘김
+        String bal = captcha.bal();
+        mnv.addObject("key",bal);
+
+        String filedown = captcha.filedown(bal);
+        System.out.println("filedown = " + filedown);
+        mnv.addObject("fname",filedown);
         mnv.setViewName("create_account_page");
         return mnv;
     }
 
     // 회원가입 로직 페이지 ( 현재 임시)
     @RequestMapping("/create-account/create.pknu")
-    public String createAccount(@ModelAttribute User user){
+    public String createAccount(@ModelAttribute User user,
+                                @RequestParam(value = "key",required = true)String key,
+                                @RequestParam(value = "captcha",required = true)String inputCaptcha){
 
+        Boolean vali = captcha.vali(key, inputCaptcha);
+        if(!vali){
+            return "redirect:/login.pknu?result=creatFail";
+        }
         boolean result = userService.createAccount(user);
         if(result){
             return "redirect:/login.pknu?result=createSuccess";
