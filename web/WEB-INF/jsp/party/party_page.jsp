@@ -6,9 +6,9 @@
     <head>
         <title>${party.name}</title>
 
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
@@ -67,17 +67,17 @@
                     for (let vo of jo.data) {
                         if (vo.joined) {
                             // $("#project_list").append($("<a></a>").text(encodeURIComponent(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
-                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id).addClass('list-group-item'));
+                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id).addClass('list-group-item col-sm-10'));
                             $("#project_list").append($("<button>").text("참가중").click(function () {
                                 leaveProject(partyId,vo.project_id);
-                            }).addClass('btn btn-success'));
+                            }).addClass('btn btn-success col-sm-2'));
                         } else {
                             // $("#project_list").append(encodeURIComponent(vo.project_name));
-                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).addClass('list-group-item disabled'));
+                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).addClass('list-group-item disabled col-sm-10'));
                             // $("#project_list").append(decodeURI(vo.project_name));
                             $("#project_list").append($("<button>").text("미참가").click(function () {
                                 joinProject(partyId,vo.project_id);
-                            }).addClass('btn btn-default'));
+                            }).addClass('btn btn-default col-sm-2'));
                         }
                         $("#project_list").append($("<br>"));
                     }
