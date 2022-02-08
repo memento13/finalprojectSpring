@@ -125,7 +125,7 @@ public class PartyController {
         for (Party party : partyList) {
             JSONObject partyJson = new JSONObject();
             partyJson.put("id",party.getId());
-            partyJson.put("name", URLEncoder.encode(party.getName(),"UTF-8"));
+            partyJson.put("name", URLEncoder.encode(party.getName(),"UTF-8").replace("+", "%20"));
             data.put(partyJson);
         }
 

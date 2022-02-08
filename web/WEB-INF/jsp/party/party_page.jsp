@@ -4,30 +4,41 @@
 <html>
 <head>
     <head>
-        <meta charset="UTF-8">
         <title>${party.name}</title>
 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 <body>
 <jsp:include page="/WEB-INF/jsp/header.jsp"/>
-${party.name} <br>
-${party.createDate}<br>
-${party.modifiedDate}<br>
-<q:if test="${isPartyLeader}">
-    <a href="create-project.pknu?party_id=${party.id}">프로젝트 생성</a><br>
-</q:if>
-<q:if test="${!isPartyLeader}">
-    <a href="party/leave.pknu?party_id=${party.id}">파티 탈퇴</a><br>
-</q:if>
-<hr>
-<div id="project_list">
+<div class="container">
+    <div class="row">
+        <h1>${party.name}</h1>
+    </div><hr>
+    <div class="row" >
+        <div class="list-group" id="project_list">
+
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <q:if test="${isPartyLeader}">
+            <a href="create-project.pknu?party_id=${party.id}" class="btn btn-primary">프로젝트 생성</a>
+        </q:if>
+        <q:if test="${!isPartyLeader}">
+            <a href="party/leave.pknu?party_id=${party.id}" class="btn btn-danger">파티 탈퇴</a>
+        </q:if>
+        <q:if test="${isPartyLeader}">
+            <a href="party/delete.pknu?party_id=${party.id}" class="btn btn-danger">파티삭제</a>
+        </q:if>
+    </div>
 
 </div>
 
-<q:if test="${isPartyLeader}">
-    <a href="party/delete.pknu?party_id=${party.id}">파티삭제</a><br>
-</q:if>
+
 
 <script>
     function joinProject(partyId,projectId) {
@@ -56,16 +67,17 @@ ${party.modifiedDate}<br>
                     for (let vo of jo.data) {
                         if (vo.joined) {
                             // $("#project_list").append($("<a></a>").text(encodeURIComponent(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
-                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id));
+                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).attr("href","project.pknu?project_id="+vo.project_id).addClass('list-group-item'));
                             $("#project_list").append($("<button>").text("참가중").click(function () {
                                 leaveProject(partyId,vo.project_id);
-                            }));
+                            }).addClass('btn btn-success'));
                         } else {
                             // $("#project_list").append(encodeURIComponent(vo.project_name));
-                            $("#project_list").append(decodeURI(vo.project_name));
+                            $("#project_list").append($("<a></a>").text(decodeURI(vo.project_name)).addClass('list-group-item disabled'));
+                            // $("#project_list").append(decodeURI(vo.project_name));
                             $("#project_list").append($("<button>").text("미참가").click(function () {
                                 joinProject(partyId,vo.project_id);
-                            }));
+                            }).addClass('btn btn-default'));
                         }
                         $("#project_list").append($("<br>"));
                     }
