@@ -1,37 +1,76 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>post</title>
 </head>
 <body>
 <jsp:include page="/WEB-INF/jsp/header.jsp"/>
-<div>
-    ${post.title} | ${post.user.name} | ${post.createDate} <a href="post/delete.pknu?post_id=${post.id}"> 삭제 </a><br>
-</div>
-<div>
-    ${post.content}
-</div>
-<div>
-    <div id="likesDisplay">
-        <p>좋아요 : ${likes}</p> <br>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">${post.title} | ${post.user.name} | ${post.createDate} <a href="post/delete.pknu?post_id=${post.id}"> 삭제 </a></h3>
+            </div>
+            <div class="panel-body">
+                ${post.content}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-5">
+                <div id="likesDisplay">
+                    <p>좋아요 : ${likes}</p> <br>
+                </div>
+                <div>
+                    <input type="button" onclick="ajaxLike('like.pknu?post_id=${post.id}')" value="좋아요" id="likebtn" class="btn btn-info"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="likesAjaxMsg" style="margin-top: 10px"></div>
+        </div>
     </div>
-    <div>
-        <input type="button" onclick="ajaxLike('like.pknu?post_id=${post.id}')" value="좋아요"/>
+    <hr>
+    <div class="row">
+        <div id="commentWriterDisplay" class="row">
+            <div class="col-sm-12 col-md-10">
+                <form method="post" accept-charset="UTF-8" name="commentWriter" class="form-inline">
+                    <textarea rows="3" style="width: 100%; resize: none" class="form-control" name="content" id="commentContent"></textarea>
+                    <input type="hidden" name="post_id" value="${post.id}">
+                </form>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <button onclick="commentCreate()" class="btn btn-primary" style="width: 100%; margin-bottom: 5px">작성</button>
+                <button onclick="ajaxCommentsShow()" class="btn btn-default" style="width: 100%">댓글 새로고침</button>
+            </div>
+
+        </div>
+
+        <div id="commentsDisplay" class="row">
+
+        </div>
+
+
     </div>
-    <div id="likesAjaxMsg"></div>
-</div>
-<div id="commentWriterDisplay">
-<form method="post" accept-charset="UTF-8" name="commentWriter">
-    <input type="hidden" name="post_id" value="${post.id}">
-    <input type="text" name="content" id="commentContent">
-</form>
-    <button onclick="commentCreate()">작성</button>
-</div>
-<button onclick="ajaxCommentsShow()">댓글 새로고침</button>
-<div id="commentsDisplay">
+
 
 </div>
+
+<%--<div id="commentWriterDisplay">--%>
+<%--<form method="post" accept-charset="UTF-8" name="commentWriter">--%>
+<%--    <input type="hidden" name="post_id" value="${post.id}">--%>
+<%--    <input type="text" name="content" id="commentContent">--%>
+<%--</form>--%>
+<%--    <button onclick="commentCreate()">작성</button>--%>
+<%--</div>--%>
+<%--<button onclick="ajaxCommentsShow()">댓글 새로고침</button>--%>
+<%--<div id="commentsDisplay">--%>
+
+<%--</div>--%>
 
 <script>
     $(document).ready(
@@ -46,7 +85,7 @@
                 if (xhr.status == 200) {
 
                     let rt = xhr.responseText;
-                    alert(rt);
+                    // alert(rt);
                     let jo = window.eval("(" + rt + ")");
                     let vo = jo.data;
                     if(vo.access){
@@ -55,7 +94,8 @@
                         $("#likesDisplay").append($("<br>"));
                     }
                     $("#likesAjaxMsg").empty();
-                    $("#likesAjaxMsg").append($("<p></p>").text(decodeURI(vo.msg)));
+                    $("#likesAjaxMsg").append($("<p></p>").text(decodeURIComponent(vo.msg))).addClass("alert alert-warning");
+                    $("#likebtn").attr("disabled",true);
                 }
             }
         };
@@ -81,16 +121,16 @@
                             let commentId = comment.comment_id
                             $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
                             $("#"+comment.comment_id).append($("<span></span>")
-                                .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
+                                .text(decodeURIComponent(comment.user_name)+" : "+decodeURIComponent(comment.content)+"  "+comment.created_date)
                                 .attr("onclick","createReplyForm('"+commentId+"')")
-                            );
-                            if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                            ).addClass("row");
+                            if(!(decodeURIComponent(comment.user_name)=='삭제된 사용자')){
                                 $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
                             }
                             $("#"+comment.comment_id).append($("<br>"));
                             for(reply of comment.replies ){
                                 $("#"+comment.comment_id).append($("<span></span>")
-                                    .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
+                                    .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURIComponent(reply.user_name)+" : "+decodeURIComponent(reply.content)+"  "+reply.created_date)
                                 );
                                 if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
                                     $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
@@ -98,6 +138,7 @@
                                 $("#"+comment.comment_id).append($("<br>"));
                             }
                             $("#"+comment.comment_id).append($("<hr>"));
+                            $("#commentsDisplay").append($("<br>"));
                         }
                     }
                 }
@@ -124,22 +165,23 @@
                 // alert(JSON.stringify(json));
                 if(jo.access){
                     $("#commentsDisplay").empty();
+                    $("#commentContent").val("");
                     for(let comment of jo.data){
                         let commentId = comment.comment_id
                         $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
                         $("#"+comment.comment_id).append($("<span></span>")
-                            .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
+                            .text(decodeURIComponent(comment.user_name)+" : "+decodeURIComponent(comment.content)+"  "+comment.created_date)
                             .attr("onclick","createReplyForm('"+commentId+"')")
                         );
-                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                        if(!(decodeURIComponent(comment.user_name)=='삭제된 사용자')){
                             $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
                         }
                         $("#"+comment.comment_id).append($("<br>"));
                         for(reply of comment.replies ){
                             $("#"+comment.comment_id).append($("<span></span>")
-                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
+                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURIComponent(reply.user_name)+" : "+decodeURIComponent(reply.content)+"  "+reply.created_date)
                             );
-                            if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
+                            if(!(decodeURIComponent(reply.user_name)=='삭제된 사용자')){
                                 $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
                             }
                             $("#"+comment.comment_id).append($("<br>"));
@@ -170,16 +212,16 @@
                         let commentId = comment.comment_id
                         $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
                         $("#"+comment.comment_id).append($("<span></span>")
-                            .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
+                            .text(decodeURIComponent(comment.user_name)+" : "+decodeURIComponent(comment.content)+"  "+comment.created_date)
                             .attr("onclick","createReplyForm('"+commentId+"')")
                         );
-                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                        if(!(decodeURIComponent(comment.user_name)=='삭제된 사용자')){
                             $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
                         }
                         $("#"+comment.comment_id).append($("<br>"));
                         for(reply of comment.replies ){
                             $("#"+comment.comment_id).append($("<span></span>")
-                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
+                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURIComponent(reply.user_name)+" : "+decodeURIComponent(reply.content)+"  "+reply.created_date)
                             );
                             if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
                                 $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));
@@ -196,17 +238,33 @@
     function createReplyForm(commentId) {
         // alert(commentId);
         $("#"+commentId+">span").removeAttr("onclick");
-        let newForm = $('<form></form>');
+        let newForm = $('<form></form>').addClass("form-inline");
         newForm.attr("name",commentId+"_reply");
         newForm.attr("method","post");
         newForm.attr("acceptCharset","UTF-8");
         newForm.append($('<input/>', {type: 'hidden', name: 'post_id', value:'${post.id}' }));
         newForm.append($('<input/>', {type: 'hidden', name: 'parent_comment_id', value: commentId }));
-        newForm.append($('<input/>', {type: 'text', name: 'content'}).attr("id","replyContent"));
+        newForm.append($('<input/>', {type: 'text', name: 'content'}).attr("id","replyContent").addClass("form-control col-sm-10"));
         $("#"+commentId).append(newForm);
-        $("#"+commentId).append($("<button >작성</button>").attr("onclick","replyCreate('"+commentId+"_reply" +"')"));
+        $("#"+commentId).append($("<button >작성</button>").attr("onclick","replyCreate('"+commentId+"_reply" +"')").addClass("btn btn-primary col-sm-2"));
+        $("#"+commentId).append($("<br><br>"));
     }
 
+    /*
+    <div id="commentWriterDisplay" class="row">
+            <div class="col-sm-12 col-md-10">
+                <form method="post" accept-charset="UTF-8" name="commentWriter" class="form-inline">
+                    <textarea rows="3" style="width: 100%; resize: none" class="form-control" name="content" id="commentContent"></textarea>
+                    <input type="hidden" name="post_id" value="${post.id}">
+                </form>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <button onclick="commentCreate()" class="btn btn-primary" style="width: 100%; margin-bottom: 5px">작성</button>
+                <button onclick="ajaxCommentsShow()" class="btn btn-default" style="width: 100%">댓글 새로고침</button>
+            </div>
+
+        </div>
+     */
     function deleteComment(commentId) {
         // alert('delete : '+commentId);
         $.ajax({
@@ -225,16 +283,16 @@
                         let commentId = comment.comment_id
                         $("#commentsDisplay").append($("<div></div>").attr("id",comment.comment_id));
                         $("#"+comment.comment_id).append($("<span></span>")
-                            .text(decodeURI(comment.user_name)+" : "+decodeURI(comment.content)+"  "+comment.created_date)
+                            .text(decodeURIComponent(comment.user_name)+" : "+decodeURIComponent(comment.content)+"  "+comment.created_date)
                             .attr("onclick","createReplyForm('"+commentId+"')")
-                        );
-                        if(!(decodeURI(comment.user_name)=='삭제된 사용자')){
+                        ).addClass("row");
+                        if(!(decodeURIComponent(comment.user_name)=='삭제된 사용자')){
                             $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+commentId+"')"));
                         }
                         $("#"+comment.comment_id).append($("<br>"));
                         for(reply of comment.replies ){
                             $("#"+comment.comment_id).append($("<span></span>")
-                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURI(reply.user_name)+" : "+decodeURI(reply.content)+"  "+reply.created_date)
+                                .text("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+decodeURIComponent(reply.user_name)+" : "+decodeURIComponent(reply.content)+"  "+reply.created_date)
                             );
                             if(!(decodeURI(reply.user_name)=='삭제된 사용자')){
                                 $("#"+comment.comment_id).append($("<a>삭제</a>").attr("onclick","deleteComment('"+reply.comment_id+"')"));

@@ -184,8 +184,18 @@ public class PostService {
             JSONObject jsonComment = new JSONObject();
 
             jsonComment.put("comment_id", comment.getId());
-            jsonComment.put("user_name", URLEncoder.encode(comment.getUserName(), "UTF-8").replace("+", "%20"));
-            jsonComment.put("content", URLEncoder.encode(comment.getContent(), "UTF-8").replace("+", "%20"));
+            jsonComment.put("user_name", URLEncoder.encode(comment.getUserName(), "UTF-8")
+                    .replace("*", "%2A")
+                    .replace("+", "%20")
+                    .replace("%7E", "~")
+                    .replace("%25","%")
+                    .replace("%3F","?"));
+            jsonComment.put("content", URLEncoder.encode(comment.getContent(), "UTF-8")
+                    .replace("*", "%2A")
+                    .replace("+", "%20")
+                    .replace("%7E", "~")
+                    .replace("%25","%")
+                    .replace("%3F","?"));
             jsonComment.put("created_date", comment.getCreateDate());
             //대댓글 json 으로
             JSONArray replies = new JSONArray();
@@ -194,8 +204,19 @@ public class PostService {
                     JSONObject reply = new JSONObject();
 
                     reply.put("comment_id", replyComment.getId());
-                    reply.put("user_name", URLEncoder.encode(replyComment.getUserName(), "UTF-8").replace("+", "%20"));
-                    reply.put("content", URLEncoder.encode(replyComment.getContent(), "UTF-8").replace("+", "%20"));
+                    reply.put("user_name", URLEncoder.encode(replyComment.getUserName(), "UTF-8")
+                            .replace("*", "%2A")
+                            .replace("+", "%20")
+                            .replace("%7E", "~")
+                            .replace("%25","%")
+                            .replace("%3F","?"));
+                    reply.put("content", URLEncoder.encode(replyComment.getContent(), "UTF-8")
+                            .replace("*", "%2A")
+                            .replace("+", "%20")
+                            .replace("%7E", "~")
+                            .replace("%25","%")
+                            .replace("%3F","?"));
+
                     reply.put("created_date", replyComment.getCreateDate());
                     replies.put(reply);
                 }
