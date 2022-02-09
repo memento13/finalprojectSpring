@@ -3,6 +3,7 @@ package service;
 import entity.*;
 import entity.vo.ProjectAndMemberId;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import repository.*;
 
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class ProjectService {
      * @param projectName 만들 프로젝트의 이름
      * @return 성공시 true 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean createProject(Party party, String projectName,User user){
 
         boolean result = false;
@@ -74,6 +76,7 @@ public class ProjectService {
      * @param user
      * @return 값이 없으면 null 이 아닌 빈 리스트가 반환됨
      */
+    @Transactional(readOnly = true)
     public List<ProjectAndMemberId> checkUserJoinedProjectList(Party party, User user){
         List<ProjectAndMemberId> result = projectRepository.findProjectAndMemberIdByPartyAndUser(party, user);
         return result;
@@ -106,6 +109,7 @@ public class ProjectService {
      * @param user 검증할려는 유저
      * @return 가입시 true, 미가입시 false 반환
      */
+    @Transactional(readOnly = true)
     public boolean checkUserJoinedProject(Project project,User user){
         boolean result = false;
         ProjectMember projectMember= projectMemberRepository.findByProjectAndUser(project, user);
@@ -120,6 +124,7 @@ public class ProjectService {
      * @param project id값만 있는 프로젝트
      * @return 프로젝트페이지에 띄우기 위한 정보가 있는 모든 값
      */
+    @Transactional(readOnly = true)
     public Map<String,Object> projectInfo(Project project){
         Map<String, Object> resultMap = new HashMap<>();
         project = projectRepository.findById(project.getId());
@@ -142,6 +147,7 @@ public class ProjectService {
      * @param user 탈퇴하려는 유저
      * @return 성공시 true, 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean leaveProject(Project project,User user){
         boolean result = false;
 
@@ -166,6 +172,7 @@ public class ProjectService {
      * @param user 삭제하려고 시도하는 유저 ( 프로젝트가 속한 파티장인지 검증해야함)
      * @return 삭제 성공시 true 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteProject(Project project,User user){
         boolean result = false;
         project = projectRepository.findById(project.getId());

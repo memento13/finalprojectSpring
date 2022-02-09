@@ -2,6 +2,7 @@ package service;
 
 import entity.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import repository.UserRepository;
 
 @Service
@@ -14,6 +15,7 @@ public class UserService {
      * @param user : 들어오는 유저 입력값
      * @return : 가입 성공시 true, 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean createAccount(User user){
 
         boolean result = true;
@@ -31,6 +33,7 @@ public class UserService {
      * @return : 로그인 성공시db에 있는 user 정보를 user객체에 전부 담아서 줌
      *           실패시 User객체에 null을 담아서 반환
      */
+    @Transactional(readOnly = true)
     public User loginAuthorization(User user){
         User result = null;
         result = userRepository.findUserByEmailAndPassword(user);

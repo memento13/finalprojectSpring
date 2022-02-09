@@ -4,6 +4,7 @@ import entity.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import repository.*;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +41,7 @@ public class PostService {
      * @param post 저장할 게시글 객체 ( 유저정보,파티정보,프로젝트 정보, 글 정보가 담겨있음)
      * @return 성공하면 true, 실패하면 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean createPost(Post post) {
         boolean result = false;
 
@@ -59,6 +61,7 @@ public class PostService {
      * @param project 프로젝트
      * @return 값이 없어도 null이 아닌 new ArrayList<>()객체로 반환함
      */
+    @Transactional(readOnly = true)
     public List<Post> projectPosts(Project project) {
         List<Post> result = postRepository.findPostsByProject(project);
         return result;
@@ -72,6 +75,7 @@ public class PostService {
      * @return 추천결과 메시지와 추천수를 json으로 반환한다.
      * {data:{msg:추천결과메시지,count:추천수}}
      */
+    @Transactional(rollbackFor = Exception.class)
     public JSONObject doLike(Post post, User user) throws UnsupportedEncodingException {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -101,6 +105,7 @@ public class PostService {
      * @param post 게시글 객체
      * @return Integer로 반환함
      */
+    @Transactional(readOnly = true)
     public Integer getLikes(Post post) {
         List<Like> likes = likeRepository.findLikesByPost(post);
         return likes.size();
@@ -113,6 +118,7 @@ public class PostService {
      * @param user 삭제명령을 지시한 사용자
      * @return 삭제에 성공하면 true, 실패시 fasle 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean deletePost(Post post, User user) {
         boolean result = false;
         Party party = partyRepository.findById(post.getPartyId());
@@ -135,6 +141,7 @@ public class PostService {
      * @param post 댓글을 찾으려는 게시글
      * @return 댓글객체(일반댓글에 대댓글까지 포함한)를 리스트로 반환함 빈값이여도 null이 아닌 arrayList
      */
+    @Transactional(readOnly = true)
     public List<Comment> getComments(Post post) {
         List<Comment> result = new ArrayList<>();
         List<Comment> commentList = commentRepository.findCommentByPost(post);
@@ -171,6 +178,7 @@ public class PostService {
      * @param post 댓글을 찾으려는 게시글
      * @return json객체로 반환
      */
+    @Transactional(readOnly = true)
     public JSONObject getCommentsToJSON(Post post) throws UnsupportedEncodingException {
         List<Comment> commentList = this.getComments(post);
 
@@ -234,6 +242,7 @@ public class PostService {
      * @param user
      * @return 성공시 true 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean addComment(Comment comment, User user) {
         boolean result = false;
         Post post = postRepository.findById(comment.getPostId());
@@ -259,6 +268,7 @@ public class PostService {
      * @param user    삭제를 실행하는 유저
      * @return 성공시 true, 실패시 false 반환
      */
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteComment(Comment comment, User user) {
         boolean result = false;
 //        Post post = postRepository.findById(comment.getPostId());
