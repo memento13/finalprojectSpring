@@ -149,16 +149,30 @@
         xhr.send(null);
     }
 
+    /*
+    <form method="post" accept-charset="UTF-8" name="commentWriter" class="form-inline">
+                    <textarea rows="3" style="width: 100%; resize: none" class="form-control" name="content" id="commentContent"></textarea>
+                    <input type="hidden" name="post_id" value="${post.id}">
+                </form>
+     */
     function commentCreate() {
-        let query = $("form[name=commentWriter]").serialize();
+        // let query = $("form[name=commentWriter]").serialize();
+        let query = '?';
+        query += 'content='+encodeURIComponent($("form[name=commentWriter]>textarea[name=content]").val());
+        query += '&post_id='+encodeURIComponent($("form[name=commentWriter]>input[name=post_id]").val());
+        // let sendJson = {
+        //     "post_id":$("form[name=commentWriter]>input[name=post_id]").val(),
+        //     "content":$("form[name=commentWriter]>textarea[name=content]").val()
+        // }
         $.ajax({
             type : 'post',
-            url : 'comment/create.pknu',
-            data : query,
+            url : 'comment/create.pknu'+query,
+            // data : JSON.stringify(sendJson),
             dataType : 'json',
             error: function(xhr, status, error){
                 alert("error");
                 alert(status+ " : "+error);
+                alert(query)
             },
             success : function(jo){
                 console.log(JSON.stringify(jo));

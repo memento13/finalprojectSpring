@@ -16,20 +16,27 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<form method="post" action="create-post/create.pknu" onsubmit="saveContent()" >
-    <input type="hidden" name="project_id" value="${project_id}">
-    <input type="hidden" name="party_id" value="${party_id}">
-    <input type="text" name="title" id="title">
-    <textarea name="content" style="display: none"></textarea>
-    <div id="summernote">서머노트테스트</div>
-    <input type="submit">
-</form>
+<div class="container">
+    <form method="post" action="create-post/create.pknu" onsubmit="saveContent()" >
+        <input type="hidden" name="project_id" value="${project_id}">
+        <input type="hidden" name="party_id" value="${party_id}">
+        <div class="row">
+            <label for="title" class="col-sm-2">제목 :</label>
+            <input type="text" name="title" id="title" class="form-control col-sm-10">
+        </div>
+            <textarea name="content" style="display: none"></textarea>
+        <div id="summernote">서머노트테스트</div>
+        <input type="submit" class="btn btn-primary">
+    </form>
+
+</div>
+
 
 <script>
     $(document).ready(function(){
 
         //썸머노트에 값넣기
-        $('#summernote').summernote('code', '<p>테스트이다.</p>');
+        $('#summernote').summernote('code', '<p></p>');
 
         //위와 같이 값을 먼저 넣어준 후 초기화를 시킨다. 그럼 아래와 같이 입력이 된다.
         //초기화

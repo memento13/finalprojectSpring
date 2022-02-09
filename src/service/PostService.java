@@ -187,14 +187,13 @@ public class PostService {
             jsonComment.put("user_name", URLEncoder.encode(comment.getUserName(), "UTF-8")
                     .replace("*", "%2A")
                     .replace("+", "%20")
+//                    .replace("%","%25")
                     .replace("%7E", "~")
-                    .replace("%25","%")
                     .replace("%3F","?"));
             jsonComment.put("content", URLEncoder.encode(comment.getContent(), "UTF-8")
                     .replace("*", "%2A")
                     .replace("+", "%20")
                     .replace("%7E", "~")
-                    .replace("%25","%")
                     .replace("%3F","?"));
             jsonComment.put("created_date", comment.getCreateDate());
             //대댓글 json 으로
@@ -208,13 +207,11 @@ public class PostService {
                             .replace("*", "%2A")
                             .replace("+", "%20")
                             .replace("%7E", "~")
-                            .replace("%25","%")
                             .replace("%3F","?"));
                     reply.put("content", URLEncoder.encode(replyComment.getContent(), "UTF-8")
                             .replace("*", "%2A")
                             .replace("+", "%20")
                             .replace("%7E", "~")
-                            .replace("%25","%")
                             .replace("%3F","?"));
 
                     reply.put("created_date", replyComment.getCreateDate());

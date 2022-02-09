@@ -209,7 +209,10 @@ public class PostController {
                                 HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
-        content = URLDecoder.decode(content, "UTF-8");
+        System.out.println("content = " + content);
+//        String decodeContent = URLDecoder.decode(content, "UTF-8").replace("%25","%");
+//        System.out.println("decodeContent = " + decodeContent);
+
         Post post = postRepository.findById(postId);
 
         Comment comment = new Comment();
@@ -244,7 +247,7 @@ public class PostController {
                               HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
-        content = URLDecoder.decode(content, "UTF-8");
+//        content = URLDecoder.decode(content, "UTF-8");
         Post post = postRepository.findById(postId);
 
         Comment comment = new Comment();
