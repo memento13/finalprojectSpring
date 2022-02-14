@@ -17,15 +17,22 @@
 <body>
 <jsp:include page="header.jsp"/>
 <div class="container">
-    <form method="post" action="create-post/create.pknu" onsubmit="saveContent()" >
-        <input type="hidden" name="project_id" value="${project_id}">
-        <input type="hidden" name="party_id" value="${party_id}">
-        <div class="row">
-            <label for="title" class="col-sm-2">제목 :</label>
-            <input type="text" name="title" id="title" class="form-control col-sm-10">
-        </div>
+    <form method="post" action="create-post/create.pknu" class="form-horizontal" onsubmit="saveContent()" >
+
+        <div class="row ">
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">제목 :</label>
+                <div class=" col-sm-10">
+                    <input type="text" name="title" id="title" class="form-control">
+                </div>
+            </div>
             <textarea name="content" style="display: none"></textarea>
-        <div id="summernote">서머노트테스트</div>
+            <input type="hidden" name="project_id" value="${project_id}">
+            <input type="hidden" name="party_id" value="${party_id}">
+        </div>
+        <div class="row">
+            <div id="summernote">서머노트테스트</div>
+        </div>
         <input type="submit" class="btn btn-primary">
     </form>
 
