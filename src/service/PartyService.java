@@ -232,4 +232,22 @@ public class PartyService {
         }
         return result;
     }
+
+    /**
+     * 유저가 파티에 가입되어 있는지 확인하는 함수
+     * @param user 파티 가입여부 확인할 유저
+     * @param partyName 가입여부 파티이룸
+     * @return 가입시 true, 미가입시 false 반환
+     */
+    public boolean isJoinParty(User user,String partyName){
+        boolean result = false;
+
+        Party party = partyRepository.findByName(partyName);
+        Integer checkUserJoinedParty = partyMemberRepository.checkUserJoinedParty(party, user);
+        if(checkUserJoinedParty==1){
+            result = true;
+        }
+
+        return result;
+    }
 }

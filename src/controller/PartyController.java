@@ -77,11 +77,15 @@ public class PartyController {
     public ModelAndView partyPage(@RequestParam("party_name") String partyName,HttpSession session) throws UnsupportedEncodingException {
 
         User user = (User) session.getAttribute("user");
-        //파티 가입했는지 확인해야함 !! 추가해야함!!
-
-        //프로젝트도 표시...? 아니면 ajax로 페이지에서 표시할까?
-
         ModelAndView mnv = new ModelAndView();
+
+        //파티 가입했는지 확인
+        boolean joinParty = partyService.isJoinParty(user, partyName);
+        if(!joinParty){
+            mnv.setViewName("redirect:/main.pknu?msg=incorrectConnection");
+            return mnv;
+        }
+
         Map<String, Object> partyInfo = partyService.partyInfo(URLDecoder.decode(partyName,"UTF-8"),user);
         for (String key : partyInfo.keySet()) {
             Object obj = partyInfo.get(key);

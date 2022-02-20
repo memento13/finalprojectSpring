@@ -177,6 +177,7 @@
                 console.log(JSON.stringify(jo));
                 // alert(JSON.stringify(json));
                 if (jo.access) {
+                    $("#commentContent").val("");
                     $("#commentsDisplay").empty();
                     for (let comment of jo.data) {
                         let commentId = comment.comment_id
