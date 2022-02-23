@@ -27,13 +27,14 @@
                 <label for="name">이름</label>
                 <input type="text" name="name" id="name" class="form-control">
             </div>
-            <div class="form-group">
-                <label for="captcha">캡챠 인증</label>
-                <input type="text" name="captcha" id="captcha" class="form-control"/>
-                <br>
-                <img src="image.jsp?fname=${fname}"><br>
-            </div>
-            <input type="hidden" name="key" value="${key}"/>
+<%--            캡챠 다시 결제시 사용--%>
+<%--            <div class="form-group">--%>
+<%--                <label for="captcha">캡챠 인증</label>--%>
+<%--                <input type="text" name="captcha" id="captcha" class="form-control"/>--%>
+<%--                <br>--%>
+<%--                <img src="image.jsp?fname=${fname}"><br>--%>
+<%--            </div>--%>
+<%--            <input type="hidden" name="key" value="${key}"/>--%>
             <button type="submit" class="btn btn-default">계정 생성</button>
         </form>
 

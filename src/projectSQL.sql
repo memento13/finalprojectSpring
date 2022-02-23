@@ -12,8 +12,8 @@ create table parties(
     name varchar(100) unique not null,
     leader_id varchar(40) not null,
     created_date timestamp(3) not null default now(3),
-    modified_date timestamp(3) not null default now(3) on update now(3)
-    foreign key(leader_id) references users(id) on update cascade on delete cascade,
+    modified_date timestamp(3) not null default now(3) on update now(3),
+    foreign key(leader_id) references users(id) on update cascade on delete cascade
 );
 -- FOREIGN key (leader_id) REFERENCES  users (id) on update CASCADE on delete set null
 -- alter table parties add constraint LeaderId foreign key (leader_id) references users (id);
@@ -57,7 +57,7 @@ create table project_members(
 create table posts(
     id varchar (40) primary key ,
     title varchar (100),
-    content text,
+    content longtext,
     party_id varchar(40) not null,
     project_id varchar(40) not null,
     user_id varchar(40) not null,

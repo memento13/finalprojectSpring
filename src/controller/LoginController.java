@@ -21,7 +21,6 @@ public class LoginController {
     private final ConnectionCheck connectionCheck;
     private final Captcha captcha;
 
-    //오토와이어 안넣어도 되나? 됨!
     public LoginController(ConnectionCheck connectionCheck, UserService userService, Captcha captcha) {
         this.connectionCheck = connectionCheck;
         this.userService = userService;
@@ -66,12 +65,12 @@ public class LoginController {
         ModelAndView mnv = new ModelAndView();
 
         //캡챠 넘김
-        String bal = captcha.bal();
-        mnv.addObject("key",bal);
-
-        String filedown = captcha.filedown(bal);
-        System.out.println("filedown = " + filedown);
-        mnv.addObject("fname",filedown);
+//        String bal = captcha.bal();
+//        mnv.addObject("key",bal);
+//
+//        String filedown = captcha.filedown(bal);
+//        System.out.println("filedown = " + filedown);
+//        mnv.addObject("fname",filedown);
         mnv.setViewName("create_account_page");
         return mnv;
     }
@@ -79,13 +78,14 @@ public class LoginController {
     // 회원가입 로직 페이지 ( 현재 임시)
     @RequestMapping("/create-account/create.pknu")
     public String createAccount(@ModelAttribute User user,
-                                @RequestParam(value = "key",required = true)String key,
-                                @RequestParam(value = "captcha",required = true)String inputCaptcha){
+                                @RequestParam(value = "key",required = true)String key
+//                                ,@RequestParam(value = "captcha",required = true)String inputCaptcha
+    ){
 
-        Boolean vali = captcha.vali(key, inputCaptcha);
-        if(!vali){
-            return "redirect:/login.pknu?result=creatFail";
-        }
+//        Boolean vali = captcha.vali(key, inputCaptcha);
+//        if(!vali){
+//            return "redirect:/login.pknu?result=creatFail";
+//        }
         boolean result = userService.createAccount(user);
         if(result){
             return "redirect:/login.pknu?result=createSuccess";
