@@ -3,7 +3,6 @@
 하나의 파티에 여러 프로젝트가 있고 프로젝트 안에서 글을 작성하고 댓글과 대댓글을 작성 할 수 있는 형태의 게시판
 <br>
 http://kimss0508.cafe24.com/login.pknu
-<hr>
 
 
 
@@ -24,7 +23,6 @@ http://kimss0508.cafe24.com/login.pknu
 
 <br/>
 
-<hr/>
 
 ## 기술스택
 
@@ -33,13 +31,13 @@ http://kimss0508.cafe24.com/login.pknu
 * MariaDB
 * Apache Tomcat 8.0.45
 * html, css, js, jQuery, Bootstrap
-<hr/>
+
 
 ## E-R 다이어그램
 
 ![image (1)](https://user-images.githubusercontent.com/61815697/155336137-a57b1c72-964e-4b79-afa2-539c7ccab09e.png)
 
-<hr>
+
 
 ## 데이터베이스 다이어그램
 
