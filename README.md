@@ -19,4 +19,5 @@
 * 유저가 파티에서 탈퇴시 파티에 속한 프로젝트에서 작성한 글들은 삭제된다.<br>
 
 <br>
+
 ![image (1)](https://user-images.githubusercontent.com/61815697/155336137-a57b1c72-964e-4b79-afa2-539c7ccab09e.png)
